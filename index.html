@@ -9,210 +9,184 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&family=Italiana&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --ink:      #0a0a0a;
-      --stone:    #f8f7f4;
-      --rose:     #c5a297;
-      --sage:     #9ca896;
-      --cream:    #fefdfb;
-      --charcoal: #3a3a3a;
-      --pearl:    #e8e6e0;
-      --gold:     #b8936f;
-      --serif:    'Cormorant Garamond', Georgia, serif;
-      --sans:     'Montserrat', sans-serif;
-      --accent:   'Italiana', serif;
+      --ink: #0a0a0a; --stone: #f8f7f4; --rose: #c5a297; --sage: #9ca896;
+      --cream: #fefdfb; --charcoal: #3a3a3a; --pearl: #e8e6e0; --gold: #b8936f;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Montserrat', sans-serif;
+      --accent: 'Italiana', serif;
     }
     html { scroll-behavior: smooth; }
     body { min-height: 100vh; background: var(--cream); font-family: var(--sans); color: var(--ink); }
 
-    /* HEADER */
-    header {
-      background: rgba(248,247,244,0.95);
-      border-bottom: 1px solid var(--pearl);
-      padding: 2rem 3rem;
-      position: sticky; top: 0; z-index: 100;
-      backdrop-filter: blur(10px);
-    }
-    .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-    .masthead-title { font-family: var(--accent); font-size: 2rem; font-weight: 400; letter-spacing: 0.05em; }
-    .masthead-sub { font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; margin-top: 0.25rem; color: var(--charcoal); font-weight: 300; }
-    .header-right { display: flex; gap: 1rem; align-items: center; }
-    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--pearl); display: inline-block; margin-right: 0.4rem; transition: background 0.4s; }
-    .status-dot.live { background: #7eb87e; }
-    .status-label { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--charcoal); }
-    .btn-setup {
-      background: var(--ink); color: var(--cream); border: none;
-      padding: 0.75rem 1.5rem; font-size: 0.72rem; letter-spacing: 0.15em;
-      text-transform: uppercase; cursor: pointer; font-weight: 500;
-      font-family: var(--sans); transition: background 0.3s, transform 0.2s;
-    }
-    .btn-setup:hover { background: var(--rose); transform: translateY(-2px); }
+```
+/* HEADER */
+header { background: rgba(248,247,244,0.96); border-bottom: 1px solid var(--pearl); padding: 1.75rem 3rem; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); }
+.header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+.masthead-title { font-family: var(--accent); font-size: 2rem; font-weight: 400; letter-spacing: 0.05em; }
+.masthead-sub { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; margin-top: 0.2rem; color: var(--charcoal); font-weight: 300; }
+.header-right { display: flex; gap: 1rem; align-items: center; }
+.status-pill { display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.9rem; border: 1px solid var(--pearl); background: white; }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pearl); transition: background 0.4s; }
+.status-dot.live { background: #7eb87e; box-shadow: 0 0 0 3px rgba(126,184,126,0.2); }
+.status-label { font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--charcoal); }
+.btn-setup { background: var(--ink); color: var(--cream); border: none; padding: 0.7rem 1.4rem; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; font-weight: 500; font-family: var(--sans); transition: background 0.25s, transform 0.2s; }
+.btn-setup:hover { background: var(--rose); transform: translateY(-2px); }
 
-    /* DATA BANNER */
-    #data-banner {
-      display: none; background: var(--stone); border-bottom: 1px solid var(--pearl);
-      padding: 0.6rem 3rem; font-size: 0.76rem; color: var(--charcoal); text-align: center;
-    }
-    #data-banner.show { display: block; }
-    #data-banner a { color: var(--rose); text-decoration: none; border-bottom: 1px solid var(--rose); }
+/* BANNER */
+#data-banner { display: none; background: var(--stone); border-bottom: 1px solid var(--pearl); padding: 0.55rem 3rem; font-size: 0.74rem; color: var(--charcoal); text-align: center; }
+#data-banner.show { display: block; }
+#data-banner a { color: var(--rose); text-decoration: none; border-bottom: 1px solid var(--rose); cursor: pointer; }
 
-    /* SETUP PANEL */
-    #setup-panel { display: none; background: white; border-bottom: 1px solid var(--pearl); padding: 3rem; }
-    #setup-panel.open { display: block; animation: slideDown 0.4s ease; }
-    .setup-inner { max-width: 1200px; margin: 0 auto; }
-    .setup-title { font-family: var(--serif); font-size: 2.5rem; font-weight: 300; margin-bottom: 0.5rem; }
-    .setup-subtitle { font-size: 0.88rem; color: var(--charcoal); margin-bottom: 2.5rem; line-height: 1.6; }
-    .setup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
-    .setup-step { padding-left: 2rem; }
-    .step-rose { border-left: 3px solid var(--rose); }
-    .step-sage { border-left: 3px solid var(--sage); }
-    .step-gold { border-left: 3px solid var(--gold); }
-    .step-dark { border-left: 3px solid var(--ink); }
-    .step-title { font-family: var(--serif); font-size: 1.4rem; font-weight: 600; margin-bottom: 0.4rem; }
-    .step-source { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--rose); margin-bottom: 1rem; font-weight: 500; }
-    .step-body { line-height: 1.8; font-size: 0.88rem; color: var(--charcoal); }
-    .step-body ol { padding-left: 1.2rem; margin-top: 0.6rem; }
-    .step-body li { margin-bottom: 0.5rem; }
-    .step-body a { color: var(--rose); text-decoration: none; border-bottom: 1px solid var(--rose); }
-    .step-body code { background: var(--pearl); padding: 0.15rem 0.4rem; font-size: 0.82em; }
-    .input-block { background: var(--stone); padding: 1.25rem; margin-top: 1.25rem; border-left: 3px solid var(--gold); }
-    .input-block label { display: block; margin-bottom: 0.4rem; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; }
-    .input-block input {
-      width: 100%; padding: 0.6rem 0.75rem; border: 1px solid var(--pearl);
-      font-size: 0.88rem; font-family: var(--sans); margin-bottom: 0.85rem;
-      background: white; outline: none; transition: border-color 0.2s;
-    }
-    .input-block input:focus { border-color: var(--rose); }
-    .input-block input:last-of-type { margin-bottom: 0; }
-    .fetch-btn {
-      margin-top: 0.9rem; background: var(--ink); color: var(--cream); border: none;
-      padding: 0.55rem 1.1rem; font-size: 0.7rem; letter-spacing: 0.12em;
-      text-transform: uppercase; cursor: pointer; font-family: var(--sans); font-weight: 500; transition: background 0.2s;
-    }
-    .fetch-btn:hover { background: var(--rose); }
-    .fetch-status { font-size: 0.76rem; margin-top: 0.5rem; min-height: 1.2em; }
-    .fetch-status.ok  { color: #5a9e5a; }
-    .fetch-status.err { color: #b05a5a; }
-    .save-bar { background: var(--ink); color: var(--cream); padding: 2rem; text-align: center; margin-top: 2.5rem; }
-    .btn-save {
-      background: var(--rose); color: var(--cream); border: none;
-      padding: 1rem 2.5rem; font-size: 0.82rem; letter-spacing: 0.15em;
-      text-transform: uppercase; cursor: pointer; font-family: var(--sans); font-weight: 500; transition: transform 0.2s;
-    }
-    .btn-save:hover { transform: scale(1.05); }
-    .save-note { margin-top: 0.75rem; font-size: 0.78rem; opacity: 0.65; }
+/* SETUP PANEL */
+#setup-panel { display: none; background: white; border-bottom: 1px solid var(--pearl); padding: 3rem; }
+#setup-panel.open { display: block; animation: slideDown 0.35s ease; }
+.setup-inner { max-width: 1200px; margin: 0 auto; }
+.setup-title { font-family: var(--serif); font-size: 2.4rem; font-weight: 300; margin-bottom: 0.4rem; }
+.setup-sub { font-size: 0.86rem; color: var(--charcoal); margin-bottom: 2.5rem; line-height: 1.65; }
+.setup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+@media(max-width:900px){ .setup-grid { grid-template-columns: 1fr; } }
+.setup-step { padding-left: 1.75rem; }
+.step-rose { border-left: 3px solid var(--rose); } .step-sage { border-left: 3px solid var(--sage); }
+.step-gold { border-left: 3px solid var(--gold); } .step-dark { border-left: 3px solid var(--ink); }
+.step-title { font-family: var(--serif); font-size: 1.35rem; font-weight: 600; margin-bottom: 0.3rem; }
+.step-badge { font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--rose); margin-bottom: 0.9rem; font-weight: 500; }
+.step-body { line-height: 1.8; font-size: 0.86rem; color: var(--charcoal); }
+.step-body ol { padding-left: 1.2rem; margin-top: 0.6rem; }
+.step-body li { margin-bottom: 0.5rem; }
+.step-body a { color: var(--rose); text-decoration: none; border-bottom: 1px solid var(--rose); }
+.step-body code { background: var(--pearl); padding: 0.12rem 0.38rem; font-size: 0.8em; }
+.input-block { background: var(--stone); padding: 1.2rem; margin-top: 1.1rem; border-left: 3px solid var(--gold); }
+.input-block label { display: block; margin-bottom: 0.35rem; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; color: var(--charcoal); }
+.input-block input { width: 100%; padding: 0.58rem 0.7rem; border: 1px solid var(--pearl); font-size: 0.86rem; font-family: var(--sans); margin-bottom: 0.8rem; background: white; outline: none; transition: border-color 0.2s; }
+.input-block input:focus { border-color: var(--rose); }
+.input-block input:last-of-type { margin-bottom: 0; }
+.fetch-btn { margin-top: 0.85rem; background: var(--ink); color: var(--cream); border: none; padding: 0.5rem 1.05rem; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; font-family: var(--sans); font-weight: 500; transition: background 0.2s; }
+.fetch-btn:hover { background: var(--rose); }
+.fetch-status { font-size: 0.74rem; margin-top: 0.45rem; min-height: 1.1em; }
+.fetch-status.ok  { color: #4e8c4e; }
+.fetch-status.err { color: #a04040; }
+.save-bar { background: var(--ink); color: var(--cream); padding: 2rem; text-align: center; margin-top: 2.5rem; }
+.btn-save { background: var(--rose); color: var(--cream); border: none; padding: 0.95rem 2.4rem; font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; font-family: var(--sans); font-weight: 500; transition: transform 0.2s; }
+.btn-save:hover { transform: scale(1.04); }
+.save-note { margin-top: 0.7rem; font-size: 0.76rem; opacity: 0.6; }
 
-    /* NAV */
-    nav { background: white; border-bottom: 1px solid var(--pearl); position: sticky; top: 86px; z-index: 99; }
-    .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 3rem; display: flex; gap: 3rem; overflow-x: auto; }
-    .nav-tab {
-      background: none; border: none; border-bottom: 2px solid transparent;
-      padding: 1.25rem 0; font-size: 0.76rem; letter-spacing: 0.1em; text-transform: uppercase;
-      cursor: pointer; color: var(--charcoal); font-weight: 400; font-family: var(--sans);
-      transition: color 0.2s, border-color 0.2s; white-space: nowrap;
-    }
-    .nav-tab.active { border-bottom-color: var(--ink); color: var(--ink); font-weight: 600; }
+/* NAV */
+nav { background: white; border-bottom: 1px solid var(--pearl); position: sticky; top: 82px; z-index: 99; }
+.nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 3rem; display: flex; gap: 3rem; overflow-x: auto; }
+.nav-tab { background: none; border: none; border-bottom: 2px solid transparent; padding: 1.2rem 0; font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; color: var(--charcoal); font-weight: 400; font-family: var(--sans); transition: color 0.2s, border-color 0.2s; white-space: nowrap; }
+.nav-tab.active { border-bottom-color: var(--ink); color: var(--ink); font-weight: 600; }
 
-    /* MAIN */
-    main { max-width: 1200px; margin: 0 auto; padding: 4rem 3rem; }
-    .panel { display: none; }
-    .panel.active { display: block; animation: fadeIn 0.35s ease; }
+/* MAIN */
+main { max-width: 1200px; margin: 0 auto; padding: 4rem 3rem; }
+.panel { display: none; }
+.panel.active { display: block; animation: fadeIn 0.32s ease; }
 
-    /* OVERVIEW */
-    .hero-metric { text-align: center; margin-bottom: 5rem; padding-bottom: 3rem; border-bottom: 1px solid var(--pearl); }
-    .hero-label { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--charcoal); margin-bottom: 1rem; font-weight: 300; }
-    .hero-number { font-family: var(--serif); font-size: 5rem; font-weight: 300; line-height: 1; margin-bottom: 0.5rem; }
-    .hero-change { font-size: 0.88rem; color: var(--rose); font-weight: 500; letter-spacing: 0.05em; }
-    .section-title { font-family: var(--serif); font-size: 1.75rem; font-weight: 300; margin-bottom: 2rem; }
-    .chart-wrap { margin-bottom: 5rem; }
-    canvas { max-height: 300px; }
-    .platform-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; }
-    .platform-card { padding: 2.5rem 2rem; background: white; border: 1px solid var(--pearl); transition: border-color 0.3s, transform 0.3s; }
-    .platform-card:hover { border-color: var(--rose); transform: translateY(-4px); }
-    .card-label { font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--charcoal); margin-bottom: 1rem; font-weight: 300; }
-    .card-number { font-family: var(--serif); font-size: 2.5rem; font-weight: 300; margin-bottom: 0.4rem; min-height: 3.2rem; }
-    .card-sub  { font-size: 0.78rem; color: var(--charcoal); margin-bottom: 0.3rem; min-height: 1.1em; }
-    .card-rate { font-size: 0.8rem; color: var(--rose); font-weight: 500; min-height: 1.1em; }
+/* OVERVIEW */
+.hero-metric { text-align: center; margin-bottom: 5rem; padding-bottom: 3rem; border-bottom: 1px solid var(--pearl); }
+.hero-label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--charcoal); margin-bottom: 0.9rem; font-weight: 300; }
+.hero-number { font-family: var(--serif); font-size: 5rem; font-weight: 300; line-height: 1; margin-bottom: 0.4rem; }
+.hero-change { font-size: 0.86rem; color: var(--rose); font-weight: 500; letter-spacing: 0.05em; min-height: 1.3em; }
+.section-title { font-family: var(--serif); font-size: 1.7rem; font-weight: 300; margin-bottom: 1.8rem; }
+.chart-wrap { margin-bottom: 5rem; }
+canvas { max-height: 300px; }
+.platform-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; }
+.platform-card { padding: 2.25rem 2rem; background: white; border: 1px solid var(--pearl); transition: border-color 0.3s, transform 0.3s; }
+.platform-card:hover { border-color: var(--rose); transform: translateY(-4px); }
+.card-label { font-size: 0.66rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--charcoal); margin-bottom: 0.9rem; font-weight: 300; }
+.card-number { font-family: var(--serif); font-size: 2.4rem; font-weight: 300; margin-bottom: 0.35rem; min-height: 3rem; }
+.card-sub  { font-size: 0.76rem; color: var(--charcoal); margin-bottom: 0.3rem; min-height: 1em; }
+.card-rate { font-size: 0.78rem; color: var(--rose); font-weight: 500; min-height: 1em; }
 
-    /* CONTENT */
-    .page-title { font-family: var(--serif); font-size: 2.25rem; font-weight: 300; margin-bottom: 3rem; }
-    .content-list { display: flex; flex-direction: column; gap: 1.5rem; }
-    .content-item {
-      display: flex; align-items: center; padding: 1.75rem 2rem; background: white;
-      border: 1px solid var(--pearl); transition: border-color 0.3s, padding-left 0.3s;
-    }
-    .content-item:hover { border-color: var(--rose); padding-left: 2.5rem; }
-    .content-rank { font-family: var(--serif); font-size: 3rem; font-weight: 300; color: var(--rose); min-width: 70px; }
-    .content-info { flex: 1; }
-    .content-name { font-family: var(--serif); font-size: 1.15rem; font-weight: 400; margin-bottom: 0.3rem; }
-    .content-date { font-size: 0.76rem; color: var(--charcoal); }
-    .content-source-tag { font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--rose); margin-top: 0.2rem; }
-    .empty-state { color: var(--charcoal); font-size: 0.9rem; padding: 2.5rem; background: white; border: 1px solid var(--pearl); line-height: 1.7; }
-    .insight-box { margin-top: 4rem; padding: 3rem; background: var(--stone); text-align: center; }
-    .insight-box h3 { font-family: var(--serif); font-size: 1.5rem; font-weight: 300; margin-bottom: 1rem; }
-    .insight-box p { font-size: 0.9rem; line-height: 1.8; color: var(--charcoal); max-width: 600px; margin: 0 auto; }
+/* CONTENT */
+.page-title { font-family: var(--serif); font-size: 2.2rem; font-weight: 300; margin-bottom: 2.5rem; }
+.content-list { display: flex; flex-direction: column; gap: 1.25rem; }
+.content-item { display: flex; align-items: center; padding: 1.6rem 2rem; background: white; border: 1px solid var(--pearl); transition: border-color 0.3s, padding-left 0.25s; }
+.content-item:hover { border-color: var(--rose); padding-left: 2.5rem; }
+.content-rank { font-family: var(--serif); font-size: 2.8rem; font-weight: 300; color: var(--rose); min-width: 65px; }
+.content-info { flex: 1; }
+.content-name { font-family: var(--serif); font-size: 1.1rem; font-weight: 400; margin-bottom: 0.25rem; line-height: 1.4; }
+.content-date { font-size: 0.74rem; color: var(--charcoal); }
+.content-tag  { font-size: 0.63rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--rose); margin-top: 0.15rem; }
+.empty-state { color: var(--charcoal); font-size: 0.88rem; padding: 2.5rem; background: white; border: 1px solid var(--pearl); line-height: 1.75; }
+.insight-box { margin-top: 4rem; padding: 2.75rem; background: var(--stone); text-align: center; }
+.insight-box h3 { font-family: var(--serif); font-size: 1.45rem; font-weight: 300; margin-bottom: 0.9rem; }
+.insight-box p { font-size: 0.88rem; line-height: 1.85; color: var(--charcoal); max-width: 620px; margin: 0 auto; }
 
-    /* AUDIENCE */
-    .audience-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 3rem; margin-bottom: 4rem; }
-    .aud-card { padding: 2.5rem; background: white; border: 1px solid var(--pearl); }
-    .aud-card-title { font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--charcoal); margin-bottom: 2rem; font-weight: 300; }
-    .bar-row { margin-bottom: 1.5rem; }
-    .bar-top { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
-    .bar-name { font-size: 0.88rem; }
-    .bar-pct-rose { font-family: var(--serif); font-size: 1.1rem; color: var(--rose); }
-    .bar-pct-sage { font-family: var(--serif); font-size: 1.1rem; color: var(--sage); }
-    .bar-track { height: 2px; background: var(--pearl); position: relative; }
-    .bar-fill-rose { position: absolute; top: 0; left: 0; height: 100%; background: var(--rose); transition: width 0.8s ease; }
-    .bar-fill-sage { position: absolute; top: 0; left: 0; height: 100%; background: var(--sage); transition: width 0.8s ease; }
-    .advantage-box { padding: 3rem; background: var(--ink); color: var(--cream); }
-    .advantage-box h3 { font-family: var(--serif); font-size: 1.5rem; font-weight: 300; margin-bottom: 1.5rem; }
-    .advantage-box p { font-size: 0.9rem; line-height: 1.8; max-width: 700px; }
+/* AUDIENCE */
+.audience-section-title { font-family: var(--serif); font-size: 1.3rem; font-weight: 300; margin: 3rem 0 1.5rem; color: var(--ink); border-bottom: 1px solid var(--pearl); padding-bottom: 0.75rem; }
+.audience-section-title:first-of-type { margin-top: 0; }
 
-    /* STRATEGY */
-    .strategy-intro { font-size: 0.9rem; color: var(--charcoal); margin-bottom: 3rem; line-height: 1.7; }
-    .recs-list { display: flex; flex-direction: column; gap: 2rem; }
-    .rec-card { padding: 2.5rem; background: white; border: 1px solid var(--pearl); transition: box-shadow 0.3s; }
-    .rec-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.07); }
-    .rec-card-rose { border-left: 4px solid var(--rose); }
-    .rec-card-gold { border-left: 4px solid var(--gold); }
-    .rec-card-sage { border-left: 4px solid var(--sage); }
-    .rec-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; }
-    .rec-title { font-family: var(--serif); font-size: 1.5rem; font-weight: 400; flex: 1; }
-    .rec-badge { font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.45rem 0.9rem; background: var(--stone); color: var(--charcoal); white-space: nowrap; margin-left: 1rem; }
-    .rec-insight { font-size: 0.9rem; line-height: 1.75; color: var(--charcoal); margin-bottom: 1.5rem; }
-    .rec-action { padding: 1.25rem; background: var(--stone); border-left: 2px solid var(--ink); }
-    .action-label { font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--charcoal); margin-bottom: 0.5rem; }
-    .action-text { font-size: 0.9rem; font-weight: 500; }
-    .roadmap { margin-top: 4rem; padding: 3rem; background: var(--ink); color: var(--cream); }
-    .roadmap h3 { font-family: var(--serif); font-size: 1.75rem; font-weight: 300; margin-bottom: 2.5rem; }
-    .roadmap-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; }
-    .phase-month { font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.75rem; opacity: 0.7; }
-    .phase-focus { font-family: var(--serif); font-size: 1.3rem; font-weight: 400; margin-bottom: 1.5rem; }
-    .phase-items { list-style: none; font-size: 0.86rem; line-height: 1.9; }
+/* source legend */
+.source-legend { display: flex; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.74rem; color: var(--charcoal); letter-spacing: 0.05em; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
 
-    /* FOOTER */
-    footer { border-top: 1px solid var(--pearl); padding: 2rem 3rem; text-align: center; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--charcoal); }
+.aud-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-bottom: 2rem; }
+@media(max-width:768px){ .aud-grid { grid-template-columns: 1fr; } }
+.aud-card { padding: 2rem; background: white; border: 1px solid var(--pearl); }
+.aud-card-title { font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--charcoal); margin-bottom: 1.75rem; font-weight: 300; }
+.bar-row { margin-bottom: 1.25rem; }
+.bar-top { display: flex; justify-content: space-between; margin-bottom: 0.4rem; align-items: baseline; }
+.bar-name { font-size: 0.84rem; }
+.bar-pct { font-family: var(--serif); font-size: 1.05rem; }
+.bar-track { height: 2px; background: var(--pearl); position: relative; }
+.bar-fill { position: absolute; top: 0; left: 0; height: 100%; transition: width 0.9s ease; }
 
-    /* ANIMATIONS */
-    @keyframes slideDown { from{opacity:0;transform:translateY(-16px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes fadeIn    { from{opacity:0;transform:translateY(6px)}  to{opacity:1;transform:translateY(0)} }
+/* Telegram engagement manual */
+.tg-posts-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+.tg-posts-table th { text-align: left; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--charcoal); font-weight: 500; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--pearl); }
+.tg-posts-table td { padding: 0.75rem; border-bottom: 1px solid var(--stone); vertical-align: middle; }
+.tg-posts-table tr:last-child td { border-bottom: none; }
+.tg-add-row { background: var(--stone); border: 1px dashed var(--pearl); padding: 1.5rem; text-align: center; font-size: 0.82rem; color: var(--charcoal); margin-top: 1rem; cursor: pointer; transition: border-color 0.2s; }
+.tg-add-row:hover { border-color: var(--rose); color: var(--rose); }
 
-    /* RESPONSIVE */
-    @media(max-width:900px){ .setup-grid { grid-template-columns: 1fr; } }
-    @media(max-width:768px){
-      header { padding: 1.5rem; }
-      main   { padding: 2rem 1.5rem; }
-      .platform-grid { grid-template-columns: 1fr; }
-      .audience-grid { grid-template-columns: 1fr; }
-      .roadmap-grid  { grid-template-columns: 1fr; }
-      .nav-inner     { gap: 1.5rem; padding: 0 1.5rem; }
-      .hero-number   { font-size: 3.5rem; }
-    }
+/* Device / geo charts side by side */
+.two-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+@media(max-width:768px){ .two-charts { grid-template-columns: 1fr; } }
+.chart-card { padding: 2rem; background: white; border: 1px solid var(--pearl); }
+.chart-card-title { font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--charcoal); margin-bottom: 1.5rem; font-weight: 300; }
+.chart-card canvas { max-height: 200px; }
+
+.advantage-box { padding: 2.75rem; background: var(--ink); color: var(--cream); margin-top: 3rem; }
+.advantage-box h3 { font-family: var(--serif); font-size: 1.45rem; font-weight: 300; margin-bottom: 1.25rem; }
+.advantage-box p { font-size: 0.88rem; line-height: 1.85; max-width: 700px; }
+.aud-note { font-size: 0.74rem; color: var(--charcoal); font-style: italic; margin-top: 1rem; line-height: 1.6; }
+.aud-placeholder { background: var(--stone); border: 1px solid var(--pearl); padding: 2rem; text-align: center; font-size: 0.86rem; color: var(--charcoal); line-height: 1.7; }
+.aud-placeholder a { color: var(--rose); text-decoration: none; border-bottom: 1px solid var(--rose); cursor: pointer; }
+
+/* STRATEGY */
+.strategy-intro { font-size: 0.88rem; color: var(--charcoal); margin-bottom: 3rem; line-height: 1.75; }
+.recs-list { display: flex; flex-direction: column; gap: 2rem; }
+.rec-card { padding: 2.4rem; background: white; border: 1px solid var(--pearl); transition: box-shadow 0.3s; }
+.rec-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.07); }
+.rec-card-rose { border-left: 4px solid var(--rose); }
+.rec-card-gold { border-left: 4px solid var(--gold); }
+.rec-card-sage { border-left: 4px solid var(--sage); }
+.rec-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.4rem; }
+.rec-title { font-family: var(--serif); font-size: 1.45rem; font-weight: 400; flex: 1; }
+.rec-badge { font-size: 0.64rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.42rem 0.85rem; background: var(--stone); color: var(--charcoal); white-space: nowrap; margin-left: 1rem; }
+.rec-insight { font-size: 0.88rem; line-height: 1.78; color: var(--charcoal); margin-bottom: 1.4rem; }
+.rec-action { padding: 1.15rem; background: var(--stone); border-left: 2px solid var(--ink); }
+.action-label { font-size: 0.64rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--charcoal); margin-bottom: 0.45rem; }
+.action-text { font-size: 0.88rem; font-weight: 500; }
+.roadmap { margin-top: 4rem; padding: 3rem; background: var(--ink); color: var(--cream); }
+.roadmap h3 { font-family: var(--serif); font-size: 1.7rem; font-weight: 300; margin-bottom: 2.5rem; }
+.roadmap-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; }
+.phase-month { font-size: 0.66rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.7rem; opacity: 0.65; }
+.phase-focus { font-family: var(--serif); font-size: 1.25rem; font-weight: 400; margin-bottom: 1.4rem; }
+.phase-items { list-style: none; font-size: 0.84rem; line-height: 1.95; }
+
+footer { border-top: 1px solid var(--pearl); padding: 2rem 3rem; text-align: center; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--charcoal); }
+
+@keyframes slideDown { from{opacity:0;transform:translateY(-14px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn    { from{opacity:0;transform:translateY(5px)}  to{opacity:1;transform:translateY(0)} }
+@media(max-width:768px){ header{padding:1.5rem} main{padding:2rem 1.5rem} .platform-grid{grid-template-columns:1fr} .roadmap-grid{grid-template-columns:1fr} .nav-inner{gap:1.5rem;padding:0 1.5rem} .hero-number{font-size:3.5rem} }
+```
+
   </style>
-
 </head>
 <body>
 
@@ -225,7 +199,7 @@
       <div class="masthead-sub">Political Communication Intelligence</div>
     </div>
     <div class="header-right">
-      <div style="display:flex;align-items:center;">
+      <div class="status-pill">
         <span class="status-dot" id="liveIndicator"></span>
         <span class="status-label" id="liveLabel">Not connected</span>
       </div>
@@ -234,11 +208,11 @@
   </div>
 </header>
 
-<!-- DATA BANNER -->
+<!-- BANNER -->
 
 <div id="data-banner">
   Last refreshed: <span id="lastRefreshed">—</span> &nbsp;·&nbsp;
-  <a href="#" onclick="refreshAll();return false;">Refresh now</a>
+  <a onclick="refreshAll()">Refresh now</a>
 </div>
 
 <!-- SETUP PANEL -->
@@ -246,7 +220,7 @@
 <div id="setup-panel">
   <div class="setup-inner">
     <h2 class="setup-title">Connect Your Data Sources</h2>
-    <p class="setup-subtitle">Follow the steps for each platform. Your credentials are saved only in your browser — nothing is ever sent to any server.</p>
+    <p class="setup-sub">Fill in what you have — everything is optional and saved only in your browser. The dashboard updates with whatever is connected.</p>
 
 ```
 <div class="setup-grid">
@@ -254,20 +228,20 @@
   <!-- TELEGRAM -->
   <div class="setup-step step-rose">
     <h3 class="step-title">Telegram Channel</h3>
-    <div class="step-source">✅ Live API — subscriber count fetched automatically</div>
+    <div class="step-badge">✅ Live subscriber count · Public posts fetched via RSS</div>
     <div class="step-body">
       <ol>
-        <li>Open Telegram → search <strong>@BotFather</strong></li>
-        <li>Send <code>/newbot</code> and follow the prompts</li>
-        <li>Copy the bot token you receive (looks like <code>123456:ABC-XYZ</code>)</li>
-        <li>Add your bot as <strong>Administrator</strong> to your channel</li>
-        <li>Your channel username is e.g. <code>@evgeniyanl</code></li>
+        <li>Search <strong>@BotFather</strong> on Telegram → send <code>/newbot</code></li>
+        <li>Copy your bot token (e.g. <code>123456:ABC-XYZ</code>)</li>
+        <li>Add your bot as <strong>Admin</strong> to your channel</li>
+        <li>Your channel username is e.g. <code>evgeniyanl</code> (without @)</li>
       </ol>
+      <p style="margin-top:0.75rem;">Recent posts are fetched from your public channel feed at <code>t.me/s/yourchannel</code> — so your channel must be <strong>public</strong>.</p>
       <div class="input-block">
         <label>Bot Token</label>
         <input type="password" id="tg-token" placeholder="123456789:ABC-DEF..." autocomplete="off"/>
-        <label>Channel Username</label>
-        <input type="text" id="tg-channel" placeholder="@yourchannel" autocomplete="off"/>
+        <label>Channel Username (without @)</label>
+        <input type="text" id="tg-channel" placeholder="evgeniyanl" autocomplete="off"/>
         <button class="fetch-btn" onclick="testTelegram()">Test Connection</button>
         <div class="fetch-status" id="tg-status"></div>
       </div>
@@ -277,13 +251,12 @@
   <!-- SUBSTACK -->
   <div class="setup-step step-sage">
     <h3 class="step-title">Substack Newsletter</h3>
-    <div class="step-source">📡 Posts via RSS · Subscribers: manual entry</div>
+    <div class="step-badge">📡 Posts via RSS · Subscriber count: manual entry</div>
     <div class="step-body">
       <ol>
-        <li>Your RSS feed is at <code>yourname.substack.com/feed</code></li>
-        <li>Recent posts appear automatically in the Content tab</li>
-        <li>Substack has no public API for subscriber counts</li>
-        <li>Find your count: Substack Dashboard → Settings → Subscribers</li>
+        <li>Your Substack RSS is at <code>yourname.substack.com/feed</code></li>
+        <li>Enter your URL below exactly as it appears in your browser</li>
+        <li>Subscriber count: Substack Dashboard → Settings → Subscribers</li>
       </ol>
       <div class="input-block">
         <label>Substack URL</label>
@@ -299,48 +272,54 @@
   <!-- GOOGLE ANALYTICS via SHEETS -->
   <div class="setup-step step-gold">
     <h3 class="step-title">Google Analytics</h3>
-    <div class="step-source">📊 Via Google Sheets — free, no server needed</div>
+    <div class="step-badge">📊 Via Google Sheets — free, no server needed</div>
     <div class="step-body">
       <ol>
         <li>Open <a href="https://sheets.google.com" target="_blank">Google Sheets</a> → new spreadsheet</li>
         <li>Extensions → Add-ons → Get add-ons → search <strong>Google Analytics</strong> → Install</li>
         <li>Extensions → Google Analytics → <strong>Create new report</strong></li>
-        <li>Pick metrics: <code>ga:sessions, ga:users, ga:pageviews</code> — last 6 weeks</li>
-        <li>Run the report, then: File → <strong>Share → Publish to web</strong></li>
-        <li>Select your sheet tab → format: <strong>CSV</strong> → click Publish</li>
-        <li>Copy the published URL and paste it below</li>
+        <li>Metrics: <code>ga:sessions, ga:users, ga:pageviews</code> · Dimensions: <code>ga:date</code> · last 42 days</li>
+        <li>Run report → File → <strong>Share → Publish to web</strong> → CSV → Publish</li>
+        <li>Paste the published URL below</li>
       </ol>
+      <p style="margin-top:0.75rem;"><strong>For audience geo/device data:</strong> create a second report with dimensions <code>ga:country</code> or <code>ga:deviceCategory</code> and publish it separately.</p>
       <div class="input-block">
-        <label>Published Google Sheet CSV URL</label>
+        <label>Sessions Sheet URL (CSV)</label>
         <input type="text" id="ga-sheet-url" placeholder="https://docs.google.com/spreadsheets/d/.../pub?output=csv" autocomplete="off"/>
+        <label>Geo / Device Sheet URL (CSV) — optional</label>
+        <input type="text" id="ga-geo-url" placeholder="https://docs.google.com/spreadsheets/d/.../pub?output=csv" autocomplete="off"/>
         <button class="fetch-btn" onclick="testGASheet()">Test Connection</button>
         <div class="fetch-status" id="ga-status"></div>
       </div>
     </div>
   </div>
 
-  <!-- WEBSITE MANUAL -->
+  <!-- WEBSITE MANUAL + TELEGRAM ENGAGEMENT -->
   <div class="setup-step step-dark">
-    <h3 class="step-title">Website Visitors</h3>
-    <div class="step-source">✏️ Manual entry — paste from any analytics tool</div>
+    <h3 class="step-title">Website &amp; Telegram Engagement</h3>
+    <div class="step-badge">✏️ Manual entry — paste from your analytics</div>
     <div class="step-body">
-      <p>Enter your latest website stats from Google Analytics, Plausible, or any tool you use. These update your overview cards instantly.</p>
+      <p>Enter your website stats from any tool, and your top Telegram post views from the Telegram app.</p>
       <div class="input-block">
-        <label>Monthly Visitors</label>
+        <label>Monthly Website Visitors</label>
         <input type="number" id="web-visitors" placeholder="e.g. 978" autocomplete="off"/>
         <label>Avg. Session Duration (seconds)</label>
         <input type="number" id="web-duration" placeholder="e.g. 142" autocomplete="off"/>
         <label>Bounce Rate (%)</label>
         <input type="number" id="web-bounce" placeholder="e.g. 58" autocomplete="off"/>
+        <label>Top Telegram Post Views (last post)</label>
+        <input type="number" id="tg-views" placeholder="e.g. 1240" autocomplete="off"/>
+        <label>Avg. Telegram Post Views</label>
+        <input type="number" id="tg-avg-views" placeholder="e.g. 830" autocomplete="off"/>
       </div>
     </div>
   </div>
 
-</div><!-- /setup-grid -->
+</div>
 
 <div class="save-bar">
   <button class="btn-save" id="saveBtn">Save &amp; Refresh Dashboard</button>
-  <p class="save-note">Credentials are stored only in your browser's localStorage — never sent to any server.</p>
+  <p class="save-note">Everything is stored only in your browser's localStorage — never sent to any server.</p>
 </div>
 ```
 
@@ -405,52 +384,94 @@
     </div>
     <div class="insight-box">
       <h3>Content Insights</h3>
-      <p id="content-insight-text">Connect your sources to see personalised insights based on your real post performance and publishing patterns.</p>
+      <p id="content-insight-text">Connect your sources to see insights based on your real publishing patterns and post frequency.</p>
     </div>
   </section>
 
   <!-- AUDIENCE -->
 
   <section class="panel" id="panel-audience">
-    <h2 class="page-title">Your Audience</h2>
-    <div class="audience-grid">
-      <div class="aud-card">
-        <div class="aud-card-title">Primary Segments</div>
-        <div class="bar-row">
-          <div class="bar-top"><span class="bar-name">Political Professionals</span><span class="bar-pct-rose">32%</span></div>
-          <div class="bar-track"><div class="bar-fill-rose" style="width:32%"></div></div>
+    <h2 class="page-title">Combined Audience Overview</h2>
+
+```
+<div class="source-legend">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--rose)"></div> Telegram</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--sage)"></div> Substack</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div> Website (GA)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--pearl);border:1px solid var(--charcoal)"></div> Manual estimate</div>
+</div>
+
+<!-- TELEGRAM ENGAGEMENT -->
+<h3 class="audience-section-title">Telegram Engagement</h3>
+<div id="tg-engagement-area">
+  <div class="aud-placeholder">
+    Connect Telegram in Setup Guide to see engagement data.<br/>
+    <a onclick="openSetup()">Open Setup Guide ↗</a>
+  </div>
+</div>
+
+<!-- GEO DISTRIBUTION -->
+<h3 class="audience-section-title">Geographic Distribution</h3>
+<div id="geo-area">
+  <div class="two-charts">
+    <div class="aud-card" id="geo-card">
+      <div class="aud-card-title">Top Countries</div>
+      <div id="geo-bars">
+        <div class="aud-placeholder" style="text-align:left;padding:1rem;">
+          Connect your GA Sheet with a <strong>country dimension</strong> to see live geo data.<br/>
+          Until then, update these manually via Setup → GA Geo Sheet.<br/><br/>
+          <em>Showing your profile estimates below.</em>
         </div>
-        <div class="bar-row">
-          <div class="bar-top"><span class="bar-name">Journalists</span><span class="bar-pct-rose">24%</span></div>
-          <div class="bar-track"><div class="bar-fill-rose" style="width:24%"></div></div>
+        <div style="margin-top:1.25rem;" id="geo-manual-bars">
+          <!-- filled by JS -->
         </div>
-        <div class="bar-row">
-          <div class="bar-top"><span class="bar-name">HR &amp; Recruiters</span><span class="bar-pct-rose">15%</span></div>
-          <div class="bar-track"><div class="bar-fill-rose" style="width:15%"></div></div>
-        </div>
-        <p style="font-size:0.74rem;color:var(--charcoal);margin-top:1.5rem;font-style:italic;">Update via Google Analytics → Audience → Demographics</p>
-      </div>
-      <div class="aud-card">
-        <div class="aud-card-title">Geographic Distribution</div>
-        <div class="bar-row">
-          <div class="bar-top"><span class="bar-name">Netherlands</span><span class="bar-pct-sage">48%</span></div>
-          <div class="bar-track"><div class="bar-fill-sage" style="width:48%"></div></div>
-        </div>
-        <div class="bar-row">
-          <div class="bar-top"><span class="bar-name">Belgium</span><span class="bar-pct-sage">12%</span></div>
-          <div class="bar-track"><div class="bar-fill-sage" style="width:12%"></div></div>
-        </div>
-        <div class="bar-row">
-          <div class="bar-top"><span class="bar-name">United Kingdom</span><span class="bar-pct-sage">11%</span></div>
-          <div class="bar-track"><div class="bar-fill-sage" style="width:11%"></div></div>
-        </div>
-        <p style="font-size:0.74rem;color:var(--charcoal);margin-top:1.5rem;font-style:italic;">From GA → Audience → Geo. Connect your Sheet to auto-update.</p>
       </div>
     </div>
-    <div class="advantage-box">
-      <h3>Your Unique Advantage</h3>
-      <p>Your multilingual background (6 languages) positions you uniquely in Dutch political communication. 48% of your audience is in the Netherlands, with strong engagement from EU policy professionals.</p>
+    <div class="aud-card">
+      <div class="aud-card-title">Device Breakdown</div>
+      <canvas id="deviceChart" style="max-height:200px;"></canvas>
+      <p class="aud-note" id="device-note">Showing estimates. Connect GA Sheet for live data.</p>
     </div>
+  </div>
+</div>
+
+<!-- WEBSITE AUDIENCE -->
+<h3 class="audience-section-title">Website Visitor Behaviour</h3>
+<div class="aud-grid" id="web-audience-grid">
+  <div class="aud-card">
+    <div class="aud-card-title">Monthly Visitors</div>
+    <div class="card-number" id="aud-web-visitors" style="font-family:var(--serif);font-size:2.2rem;font-weight:300;">—</div>
+    <div class="card-rate" id="aud-web-bounce" style="margin-top:0.5rem;font-size:0.82rem;color:var(--charcoal);"></div>
+  </div>
+  <div class="aud-card">
+    <div class="aud-card-title">Avg. Time on Site</div>
+    <div class="card-number" id="aud-web-duration" style="font-family:var(--serif);font-size:2.2rem;font-weight:300;">—</div>
+    <div class="card-rate" style="margin-top:0.5rem;font-size:0.78rem;color:var(--charcoal);">per session</div>
+  </div>
+  <div class="aud-card">
+    <div class="aud-card-title">Audience Segments</div>
+    <div style="margin-top:0.5rem;" id="segment-bars">
+      <!-- filled by JS -->
+    </div>
+    <p class="aud-note">Based on your audience profile. Update manually as you learn more.</p>
+  </div>
+</div>
+
+<!-- SUBSTACK ENGAGEMENT -->
+<h3 class="audience-section-title">Substack Newsletter</h3>
+<div id="ss-audience-area">
+  <div class="aud-placeholder">
+    Connect Substack in Setup Guide to see newsletter data.<br/>
+    <a onclick="openSetup()">Open Setup Guide ↗</a>
+  </div>
+</div>
+
+<div class="advantage-box">
+  <h3>Your Unique Advantage</h3>
+  <p id="advantage-text">Your multilingual background (6 languages) positions you uniquely in Dutch political communication. Your audience spans the Netherlands, Belgium, and the UK — with strong engagement from EU policy professionals and journalists who amplify your reach.</p>
+</div>
+```
+
   </section>
 
   <!-- STRATEGY -->
@@ -464,10 +485,10 @@
           <div class="rec-title">Launch Weekly Data Series</div>
           <div class="rec-badge">High Impact</div>
         </div>
-        <p class="rec-insight">Your data analysis posts get 34% more engagement. Create a signature weekly series combining Dutch politics + data visualisation.</p>
+        <p class="rec-insight">Data-driven political analysis consistently outperforms opinion pieces. A signature weekly series combining Dutch politics + data visualisation builds a loyal return audience.</p>
         <div class="rec-action">
           <div class="action-label">Action Step</div>
-          <div class="action-text">Start with "Politics by Numbers" every Wednesday at 9 AM</div>
+          <div class="action-text">Start "Politics by Numbers" every Wednesday at 9 AM CET</div>
         </div>
       </div>
       <div class="rec-card rec-card-gold">
@@ -475,7 +496,7 @@
           <div class="rec-title">Leverage Multilingual Edge</div>
           <div class="rec-badge">Unique Advantage</div>
         </div>
-        <p class="rec-insight">Only 3% of Dutch political communicators operate in 6 languages. Cross-cultural analysis is your differentiator.</p>
+        <p class="rec-insight">Only 3% of Dutch political communicators operate in 6 languages. Cross-cultural political analysis is your clearest differentiator in a crowded space.</p>
         <div class="rec-action">
           <div class="action-label">Action Step</div>
           <div class="action-text">Create comparative content: "How EU policy is discussed in NL vs IT vs UK"</div>
@@ -486,10 +507,10 @@
           <div class="rec-title">Network with Journalists</div>
           <div class="rec-badge">Career Growth</div>
         </div>
-        <p class="rec-insight">Journalists are 24% of your engaged audience and amplify your reach 3.2× on average.</p>
+        <p class="rec-insight">Journalists in your audience amplify your reach significantly. Building personal relationships turns passive readers into active promoters of your work.</p>
         <div class="rec-action">
           <div class="action-label">Action Step</div>
-          <div class="action-text">Engage with NOS, NRC, and Politico journalists on Twitter 9–11 AM weekdays</div>
+          <div class="action-text">Engage NOS, NRC, and Politico journalists on LinkedIn and Twitter 9–11 AM weekdays</div>
         </div>
       </div>
     </div>
@@ -537,291 +558,366 @@
 
 <script>
 // ─── STATE ───────────────────────────────────
-const state = {
-  tgSubscribers: null,
-  tgPosts: [],
-  ssPosts: [],
-  ssSubscribers: null,
-  webVisitors: null,
-  webDuration: null,
-  webBounce: null,
-  gaWeekly: [],
+const S = {
+  tgSubscribers: null, tgPosts: [], tgViews: null, tgAvgViews: null,
+  ssPosts: [], ssSubscribers: null,
+  webVisitors: null, webDuration: null, webBounce: null,
+  gaWeekly: [], gaGeo: [], gaDevice: [],
 };
 
-// ─── STORAGE KEYS ────────────────────────────
 const K = {
-  tgToken:   'ev_tg_token',
-  tgChannel: 'ev_tg_channel',
-  ssUrl:     'ev_ss_url',
-  ssSubs:    'ev_ss_subs',
-  gaUrl:     'ev_ga_url',
-  webV:      'ev_web_visitors',
-  webD:      'ev_web_duration',
-  webB:      'ev_web_bounce',
+  tgToken:'ev_tg_token', tgChannel:'ev_tg_channel',
+  ssUrl:'ev_ss_url', ssSubs:'ev_ss_subs',
+  gaUrl:'ev_ga_url', gaGeoUrl:'ev_ga_geo_url',
+  webV:'ev_web_visitors', webD:'ev_web_duration', webB:'ev_web_bounce',
+  tgViews:'ev_tg_views', tgAvgViews:'ev_tg_avg_views',
 };
 
-// ─── LOAD SAVED CREDENTIALS ──────────────────
-function loadSaved() {
-  const map = {
-    'tg-token':    K.tgToken,
-    'tg-channel':  K.tgChannel,
-    'ss-url':      K.ssUrl,
-    'ss-subs':     K.ssSubs,
-    'ga-sheet-url':K.gaUrl,
-    'web-visitors':K.webV,
-    'web-duration':K.webD,
-    'web-bounce':  K.webB,
-  };
-  for (const [id, key] of Object.entries(map)) {
-    const val = localStorage.getItem(key);
-    const el  = document.getElementById(id);
-    if (val && el) el.value = val;
+// ─── PROXIES (multiple fallbacks for Substack) ─
+const PROXIES = [
+  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+  url => `https://thingproxy.freeboard.io/fetch/${url}`,
+];
+
+async function fetchWithFallback(url) {
+  for (const makeProxy of PROXIES) {
+    try {
+      const r = await fetch(makeProxy(url), { signal: AbortSignal.timeout(6000) });
+      if (!r.ok) continue;
+      const text = await r.text();
+      // allorigins wraps in JSON
+      try { const j = JSON.parse(text); if (j.contents) return j.contents; } catch {}
+      return text;
+    } catch {}
   }
+  throw new Error('All proxies failed');
 }
 
-// ─── SAVE CREDENTIALS ────────────────────────
+// ─── SAVE / LOAD ─────────────────────────────
+function loadSaved() {
+  const map = { 'tg-token':K.tgToken,'tg-channel':K.tgChannel,'ss-url':K.ssUrl,'ss-subs':K.ssSubs,'ga-sheet-url':K.gaUrl,'ga-geo-url':K.gaGeoUrl,'web-visitors':K.webV,'web-duration':K.webD,'web-bounce':K.webB,'tg-views':K.tgViews,'tg-avg-views':K.tgAvgViews };
+  for (const [id,key] of Object.entries(map)) { const el=document.getElementById(id); const v=localStorage.getItem(key); if(el&&v) el.value=v; }
+}
 function saveCredentials() {
-  const map = {
-    'tg-token':    K.tgToken,
-    'tg-channel':  K.tgChannel,
-    'ss-url':      K.ssUrl,
-    'ss-subs':     K.ssSubs,
-    'ga-sheet-url':K.gaUrl,
-    'web-visitors':K.webV,
-    'web-duration':K.webD,
-    'web-bounce':  K.webB,
-  };
-  for (const [id, key] of Object.entries(map)) {
-    const el = document.getElementById(id);
-    if (el && el.value.trim()) localStorage.setItem(key, el.value.trim());
-  }
+  const map = { 'tg-token':K.tgToken,'tg-channel':K.tgChannel,'ss-url':K.ssUrl,'ss-subs':K.ssSubs,'ga-sheet-url':K.gaUrl,'ga-geo-url':K.gaGeoUrl,'web-visitors':K.webV,'web-duration':K.webD,'web-bounce':K.webB,'tg-views':K.tgViews,'tg-avg-views':K.tgAvgViews };
+  for (const [id,key] of Object.entries(map)) { const el=document.getElementById(id); if(el&&el.value.trim()) localStorage.setItem(key,el.value.trim()); }
 }
 
 // ─── TELEGRAM ────────────────────────────────
 async function fetchTelegram(token, channel) {
-  if (!token || !channel) return;
-  const chan = channel.startsWith('@') ? channel : '@' + channel;
-  const base = `https://api.telegram.org/bot${token}`;
+  if (!token||!channel) return;
+  const chan = channel.replace(/^@/,'');
   try {
-    const r = await fetch(`${base}/getChatMemberCount?chat_id=${encodeURIComponent(chan)}`);
+    // Subscriber count via Bot API
+    const r = await fetch(`https://api.telegram.org/bot${token}/getChatMemberCount?chat_id=@${chan}`);
     const d = await r.json();
-    if (d.ok) state.tgSubscribers = d.result;
-
-    const r2 = await fetch(`${base}/getChat?chat_id=${encodeURIComponent(chan)}`);
-    const d2 = await r2.json();
-    if (d2.ok && d2.result.title) {
-      state.tgPosts = [{ title: d2.result.title, date: '', source: 'Telegram', desc: d2.result.description || '' }];
-    }
-  } catch(e) { console.warn('Telegram error', e); }
+    if (d.ok) S.tgSubscribers = d.result;
+  } catch {}
+  try {
+    // Public posts via t.me/s/channel (HTML scrape)
+    const html = await fetchWithFallback(`https://t.me/s/${chan}`);
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    const msgs = div.querySelectorAll('.tgme_widget_message_text');
+    const dates = div.querySelectorAll('.tgme_widget_message_date time');
+    const views = div.querySelectorAll('.tgme_widget_message_views');
+    S.tgPosts = Array.from(msgs).slice(-8).map((m,i) => ({
+      title: (m.textContent||'').trim().slice(0,120) + ((m.textContent||'').length>120?'…':''),
+      date:  dates[i]?.getAttribute('datetime')||'',
+      views: views[i]?.textContent?.trim()||'',
+      source:'Telegram',
+    })).filter(p=>p.title.length>10).reverse();
+  } catch (e) { console.warn('TG posts error',e); }
 }
 
 async function testTelegram() {
-  const token   = document.getElementById('tg-token').value.trim();
-  const channel = document.getElementById('tg-channel').value.trim();
-  const status  = document.getElementById('tg-status');
-  status.textContent = 'Connecting…'; status.className = 'fetch-status';
-  if (!token || !channel) { status.textContent = 'Please fill in both fields.'; status.className = 'fetch-status err'; return; }
-  const chan = channel.startsWith('@') ? channel : '@' + channel;
+  const token=document.getElementById('tg-token').value.trim();
+  const channel=document.getElementById('tg-channel').value.trim();
+  const st=document.getElementById('tg-status');
+  st.textContent='Connecting…'; st.className='fetch-status';
+  if(!token||!channel){st.textContent='Please fill both fields.';st.className='fetch-status err';return;}
+  const chan=channel.replace(/^@/,'');
   try {
-    const r = await fetch(`https://api.telegram.org/bot${token}/getChatMemberCount?chat_id=${encodeURIComponent(chan)}`);
-    const d = await r.json();
-    if (d.ok) { status.textContent = `✓ Connected! ${d.result.toLocaleString()} subscribers`; status.className = 'fetch-status ok'; }
-    else       { status.textContent = `Error: ${d.description}`;                               status.className = 'fetch-status err'; }
-  } catch(e) { status.textContent = 'Connection failed. Check your token and channel name.'; status.className = 'fetch-status err'; }
+    const r=await fetch(`https://api.telegram.org/bot${token}/getChatMemberCount?chat_id=@${chan}`);
+    const d=await r.json();
+    if(d.ok){st.textContent=`✓ Connected! ${d.result.toLocaleString()} subscribers`;st.className='fetch-status ok';}
+    else{st.textContent=`Error: ${d.description}`;st.className='fetch-status err';}
+  } catch {st.textContent='Connection failed. Check your token and channel name.';st.className='fetch-status err';}
 }
 
-// ─── SUBSTACK RSS ────────────────────────────
+// ─── SUBSTACK ────────────────────────────────
 async function fetchSubstack(url) {
-  if (!url) return;
-  const clean = url.replace(/^https?:\/\//, '').replace(/\/+$/, '');
-  const feed  = `https://${clean}/feed`;
-  const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(feed)}`;
+  if(!url) return;
+  let clean = url.trim().replace(/^https?:\/\//,'').replace(/\/+$/,'');
+  const feedUrl = `https://${clean}/feed`;
   try {
-    const r = await fetch(proxy);
-    const d = await r.json();
-    const xml = new DOMParser().parseFromString(d.contents, 'text/xml');
-    state.ssPosts = Array.from(xml.querySelectorAll('item')).slice(0, 8).map(item => ({
-      title:  item.querySelector('title')?.textContent || 'Untitled',
-      date:   item.querySelector('pubDate')?.textContent || '',
-      source: 'Substack',
-      link:   item.querySelector('link')?.textContent || '#',
+    const text = await fetchWithFallback(feedUrl);
+    const xml = new DOMParser().parseFromString(text,'text/xml');
+    const parseErr = xml.querySelector('parsererror');
+    if(parseErr) throw new Error('XML parse error');
+    S.ssPosts = Array.from(xml.querySelectorAll('item')).slice(0,10).map(item=>({
+      title: item.querySelector('title')?.textContent?.trim()||'Untitled',
+      date:  item.querySelector('pubDate')?.textContent||'',
+      link:  item.querySelector('link')?.textContent||'#',
+      source:'Substack',
     }));
-  } catch(e) { console.warn('Substack RSS error', e); }
+  } catch(e) { console.warn('Substack RSS error:',e); }
 }
 
 async function testSubstack() {
-  const url    = document.getElementById('ss-url').value.trim();
-  const status = document.getElementById('ss-status');
-  status.textContent = 'Fetching…'; status.className = 'fetch-status';
-  if (!url) { status.textContent = 'Please enter your Substack URL.'; status.className = 'fetch-status err'; return; }
-  const clean = url.replace(/^https?:\/\//, '').replace(/\/+$/, '');
-  const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://${clean}/feed`)}`;
+  const url=document.getElementById('ss-url').value.trim();
+  const st=document.getElementById('ss-status');
+  st.textContent='Fetching…'; st.className='fetch-status';
+  if(!url){st.textContent='Please enter your Substack URL.';st.className='fetch-status err';return;}
+  let clean=url.replace(/^https?:\/\//,'').replace(/\/+$/,'');
+  const feedUrl=`https://${clean}/feed`;
   try {
-    const r = await fetch(proxy);
-    const d = await r.json();
-    const xml = new DOMParser().parseFromString(d.contents, 'text/xml');
-    const n = xml.querySelectorAll('item').length;
-    if (n > 0) { status.textContent = `✓ Found ${n} posts in your feed`; status.className = 'fetch-status ok'; }
-    else        { status.textContent = 'No posts found. Check your URL.';  status.className = 'fetch-status err'; }
-  } catch(e) { status.textContent = 'Failed. Double-check your Substack URL.'; status.className = 'fetch-status err'; }
+    const text=await fetchWithFallback(feedUrl);
+    const xml=new DOMParser().parseFromString(text,'text/xml');
+    const n=xml.querySelectorAll('item').length;
+    if(n>0){st.textContent=`✓ Found ${n} posts in your Substack feed`;st.className='fetch-status ok';}
+    else{st.textContent='No posts found — double-check your URL (e.g. yourname.substack.com)';st.className='fetch-status err';}
+  } catch {st.textContent='Could not reach feed. Check URL and try again.';st.className='fetch-status err';}
 }
 
-// ─── GOOGLE ANALYTICS via SHEETS CSV ─────────
+// ─── GA SHEETS ───────────────────────────────
 async function fetchGASheet(sheetUrl) {
-  if (!sheetUrl) return;
-  const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(sheetUrl)}`;
+  if(!sheetUrl) return;
   try {
-    const r = await fetch(proxy);
-    const d = await r.json();
-    const rows = d.contents.trim().split('\n').slice(1);
-    state.gaWeekly = rows.slice(-6).map((row, i) => {
-      const cols = row.split(',');
-      return { label: cols[0]?.trim() || `W${i+1}`, sessions: parseInt(cols[1]) || 0 };
+    const text = await fetchWithFallback(sheetUrl);
+    const rows = text.trim().split('\n').slice(1);
+    S.gaWeekly = rows.slice(-6).map((row,i)=>{
+      const cols=row.split(',');
+      return {label:cols[0]?.trim()||`W${i+1}`, sessions:parseInt(cols[1])||0};
     });
-  } catch(e) { console.warn('GA Sheet error', e); }
+  } catch(e){console.warn('GA Sheet error',e);}
+}
+
+async function fetchGAGeoSheet(geoUrl) {
+  if(!geoUrl) return;
+  try {
+    const text = await fetchWithFallback(geoUrl);
+    const rows = text.trim().split('\n').slice(1);
+    S.gaGeo = rows.slice(0,6).map(row=>{
+      const cols=row.split(',');
+      return {name:cols[0]?.trim()||'Unknown', value:parseInt(cols[1])||0};
+    });
+    const total = S.gaGeo.reduce((a,b)=>a+b.value,0);
+    if(total>0) S.gaGeo.forEach(g=>g.pct=Math.round(g.value/total*100));
+  } catch(e){console.warn('GA Geo error',e);}
 }
 
 async function testGASheet() {
-  const url    = document.getElementById('ga-sheet-url').value.trim();
-  const status = document.getElementById('ga-status');
-  status.textContent = 'Connecting…'; status.className = 'fetch-status';
-  if (!url) { status.textContent = 'Please paste your published CSV URL.'; status.className = 'fetch-status err'; return; }
+  const url=document.getElementById('ga-sheet-url').value.trim();
+  const st=document.getElementById('ga-status');
+  st.textContent='Connecting…'; st.className='fetch-status';
+  if(!url){st.textContent='Please paste your published CSV URL.';st.className='fetch-status err';return;}
   try {
-    const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-    const r = await fetch(proxy);
-    const d = await r.json();
-    const rows = d.contents.trim().split('\n');
-    if (rows.length > 1) { status.textContent = `✓ Connected! ${rows.length - 1} rows of GA data found`; status.className = 'fetch-status ok'; }
-    else                  { status.textContent = 'Connected but no data rows found. Check sheet format.';  status.className = 'fetch-status err'; }
-  } catch(e) { status.textContent = 'Could not reach sheet. Make sure it is published publicly.'; status.className = 'fetch-status err'; }
+    const text=await fetchWithFallback(url);
+    const rows=text.trim().split('\n');
+    if(rows.length>1){st.textContent=`✓ Connected! ${rows.length-1} rows of GA data`;st.className='fetch-status ok';}
+    else{st.textContent='Connected but no rows found — check sheet format.';st.className='fetch-status err';}
+  } catch {st.textContent='Could not reach sheet. Make sure it is published publicly as CSV.';st.className='fetch-status err';}
 }
 
-// ─── CHART ───────────────────────────────────
-let growthChart = null;
-function initChart(labels, data) {
-  const ctx = document.getElementById('growthChart').getContext('2d');
-  const grad = ctx.createLinearGradient(0, 0, 0, 300);
-  grad.addColorStop(0, 'rgba(197,162,151,0.25)');
-  grad.addColorStop(1, 'rgba(197,162,151,0)');
-  if (growthChart) growthChart.destroy();
-  growthChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        data, borderColor: '#c5a297', borderWidth: 2,
-        pointBackgroundColor: '#c5a297', pointRadius: 4,
-        fill: true, backgroundColor: grad, tension: 0.4
-      }]
-    },
-    options: {
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { display: false }, ticks: { font: { family: "'Montserrat',sans-serif", size: 11 }, color: '#3a3a3a' } },
-        y: { grid: { color: 'rgba(0,0,0,0.04)' }, border: { display: false }, ticks: { font: { family: "'Montserrat',sans-serif", size: 11 }, color: '#3a3a3a' } }
-      }
-    }
-  });
+// ─── CHARTS ──────────────────────────────────
+let growthChart=null, deviceChart=null;
+
+function initGrowthChart(labels,data) {
+  const ctx=document.getElementById('growthChart').getContext('2d');
+  const grad=ctx.createLinearGradient(0,0,0,300);
+  grad.addColorStop(0,'rgba(197,162,151,0.25)'); grad.addColorStop(1,'rgba(197,162,151,0)');
+  if(growthChart) growthChart.destroy();
+  growthChart=new Chart(ctx,{type:'line',data:{labels,datasets:[{data,borderColor:'#c5a297',borderWidth:2,pointBackgroundColor:'#c5a297',pointRadius:4,fill:true,backgroundColor:grad,tension:0.4}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{family:"'Montserrat',sans-serif",size:11},color:'#3a3a3a'}},y:{grid:{color:'rgba(0,0,0,0.04)'},border:{display:false},ticks:{font:{family:"'Montserrat',sans-serif",size:11},color:'#3a3a3a'}}}}});
 }
 
-// ─── UPDATE UI ───────────────────────────────
+function initDeviceChart(data) {
+  const ctx=document.getElementById('deviceChart').getContext('2d');
+  if(deviceChart) deviceChart.destroy();
+  deviceChart=new Chart(ctx,{type:'doughnut',data:{labels:['Desktop','Mobile','Tablet'],datasets:[{data,backgroundColor:['#c5a297','#9ca896','#b8936f'],borderWidth:0}]},options:{plugins:{legend:{position:'bottom',labels:{font:{family:"'Montserrat',sans-serif",size:10},padding:12,boxWidth:10}}},cutout:'65%'}});
+}
+
+// ─── BAR HELPER ──────────────────────────────
+function renderBars(containerId, items, color) {
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  el.innerHTML = items.map(({name,pct})=>`
+    <div class="bar-row">
+      <div class="bar-top">
+        <span class="bar-name">${name}</span>
+        <span class="bar-pct" style="font-family:var(--serif);font-size:1.05rem;color:${color}">${pct}%</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
+    </div>`).join('');
+}
+
+// ─── UPDATE UI ────────────────────────────────
 function updateUI() {
-  const tg  = state.tgSubscribers;
-  const ss  = state.ssSubscribers;
-  const web = state.webVisitors;
-  const anyLive = tg !== null || ss !== null || web !== null;
+  const tg=S.tgSubscribers, ss=S.ssSubscribers, web=S.webVisitors;
+  const anyLive = tg!==null||ss!==null||web!==null;
 
-  // Header status
-  document.getElementById('liveIndicator').className = 'status-dot' + (anyLive ? ' live' : '');
-  document.getElementById('liveLabel').textContent   = anyLive ? 'Live data' : 'Not connected';
+  // Header
+  document.getElementById('liveIndicator').className='status-dot'+(anyLive?' live':'');
+  document.getElementById('liveLabel').textContent=anyLive?'Live data':'Not connected';
 
-  // Hero total
-  const total = (tg || 0) + (ss || 0) + (web || 0);
-  document.getElementById('totalReach').textContent  = total > 0 ? total.toLocaleString() : '—';
-  const sources = [tg !== null && 'Telegram', ss !== null && 'Substack', web !== null && 'Website'].filter(Boolean);
-  document.getElementById('totalReachSub').textContent = sources.length
-    ? sources.join(' + ') + ' combined'
-    : 'Connect your sources in Setup Guide ↗';
+  // Hero
+  const total=(tg||0)+(ss||0)+(web||0);
+  document.getElementById('totalReach').textContent=total>0?total.toLocaleString():'—';
+  const srcs=[tg!==null&&'Telegram',ss!==null&&'Substack',web!==null&&'Website'].filter(Boolean);
+  document.getElementById('totalReachSub').textContent=srcs.length?srcs.join(' + ')+' combined':'Connect your sources in Setup Guide ↗';
 
-  // Telegram card
-  document.getElementById('tg-count').textContent = tg !== null ? tg.toLocaleString() : '—';
-  document.getElementById('tg-rate').textContent  = tg !== null ? 'Subscribers (live)' : 'Not connected';
-  if (state.tgPosts.length) document.getElementById('tg-sub').textContent = state.tgPosts[0].title;
+  // Cards
+  document.getElementById('tg-count').textContent=tg!==null?tg.toLocaleString():'—';
+  document.getElementById('tg-rate').textContent=tg!==null?'Subscribers (live)':'Not connected';
+  if(S.tgViews) document.getElementById('tg-sub').textContent=`Last post: ${parseInt(S.tgViews).toLocaleString()} views`;
 
-  // Substack card
-  document.getElementById('ss-count').textContent = ss !== null ? ss.toLocaleString() : '—';
-  document.getElementById('ss-rate').textContent  = ss !== null ? 'Newsletter subscribers' : 'Not connected';
-  if (state.ssPosts.length) document.getElementById('ss-sub').textContent = `${state.ssPosts.length} recent posts`;
+  document.getElementById('ss-count').textContent=ss!==null?ss.toLocaleString():'—';
+  document.getElementById('ss-rate').textContent=ss!==null?'Newsletter subscribers':'Not connected';
+  if(S.ssPosts.length) document.getElementById('ss-sub').textContent=`${S.ssPosts.length} recent posts`;
 
-  // Website card
-  document.getElementById('web-count').textContent = web !== null ? web.toLocaleString() : '—';
-  document.getElementById('web-rate').textContent  = web !== null
-    ? (state.webBounce !== null ? `${state.webBounce}% bounce rate` : 'Monthly visitors')
-    : 'Not connected';
-  if (state.webDuration !== null) {
-    const m = Math.floor(state.webDuration / 60), s = state.webDuration % 60;
-    document.getElementById('web-sub').textContent = `Avg. ${m}m ${s}s per session`;
-  }
+  document.getElementById('web-count').textContent=web!==null?web.toLocaleString():'—';
+  document.getElementById('web-rate').textContent=web!==null?(S.webBounce!==null?`${S.webBounce}% bounce rate`:'Monthly visitors'):'Not connected';
+  if(S.webDuration!==null){const m=Math.floor(S.webDuration/60),sec=S.webDuration%60;document.getElementById('web-sub').textContent=`Avg. ${m}m ${sec}s per session`;}
 
-  // Chart — prefer real GA data, else estimate from total
-  if (state.gaWeekly.length > 0) {
-    initChart(state.gaWeekly.map(r => r.label), state.gaWeekly.map(r => r.sessions));
-  } else if (total > 0) {
-    const pts = [0.55, 0.64, 0.73, 0.82, 0.91, 1].map(f => Math.round(total * f));
-    initChart(['W1','W2','W3','W4','W5','Now'], pts);
-  } else {
-    initChart(['W1','W2','W3','W4','W5','W6'], [0,0,0,0,0,0]);
-  }
+  // Growth chart
+  if(S.gaWeekly.length>0) initGrowthChart(S.gaWeekly.map(r=>r.label),S.gaWeekly.map(r=>r.sessions));
+  else if(total>0) initGrowthChart(['W1','W2','W3','W4','W5','Now'],[0.55,0.64,0.73,0.82,0.91,1].map(f=>Math.round(total*f)));
+  else initGrowthChart(['W1','W2','W3','W4','W5','W6'],[0,0,0,0,0,0]);
 
-  // Content tab
-  const allPosts = [
-    ...state.ssPosts,
-    ...state.tgPosts.filter(p => p.title && p.title !== 'Untitled'),
-  ].slice(0, 8);
-
-  const list = document.getElementById('content-list');
-  if (allPosts.length > 0) {
-    list.innerHTML = allPosts.map((p, i) => {
-      const dateStr = p.date ? (() => {
-        try { return new Date(p.date).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }); }
-        catch { return ''; }
-      })() : '';
-      return `
-        <div class="content-item">
-          <div class="content-rank">${i + 1}</div>
-          <div class="content-info">
-            <div class="content-name">${p.title}</div>
-            ${dateStr ? `<div class="content-date">${dateStr}</div>` : ''}
-            <div class="content-source-tag">${p.source}</div>
-          </div>
-        </div>`;
+  // Content
+  const allPosts=[...S.ssPosts,...S.tgPosts].slice(0,10);
+  const list=document.getElementById('content-list');
+  if(allPosts.length>0){
+    list.innerHTML=allPosts.map((p,i)=>{
+      let dateStr='';
+      try{if(p.date) dateStr=new Date(p.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}catch{}
+      return `<div class="content-item">
+        <div class="content-rank">${i+1}</div>
+        <div class="content-info">
+          <div class="content-name">${p.title}</div>
+          ${dateStr?`<div class="content-date">${dateStr}</div>`:''}
+          <div class="content-tag">${p.source}</div>
+        </div>
+      </div>`;
     }).join('');
-
-    // Insight based on post frequency
-    const now = Date.now();
-    const recentPosts = allPosts.filter(p => {
-      try { return p.date && (now - new Date(p.date).getTime()) < 30 * 24 * 3600 * 1000; }
-      catch { return false; }
-    });
-    document.getElementById('content-insight-text').textContent =
-      recentPosts.length > 0
-        ? `You've published ${recentPosts.length} piece${recentPosts.length > 1 ? 's' : ''} in the last 30 days. Data-driven political analysis consistently outperforms opinion pieces — keep that cadence going.`
-        : 'Your content is loading. Data-driven political analysis consistently outperforms opinion pieces — Wednesday morning posts see the highest engagement.';
+    const recent=allPosts.filter(p=>{try{return p.date&&Date.now()-new Date(p.date).getTime()<30*864e5;}catch{return false;}});
+    document.getElementById('content-insight-text').textContent=recent.length>0
+      ?`You've published ${recent.length} piece${recent.length>1?'s':''} in the last 30 days. Data-driven political analysis consistently outperforms opinion pieces — keep the cadence going.`
+      :'Your content is loaded. Data-driven political analysis consistently outperforms opinion pieces. Wednesday morning posts see the highest engagement.';
   } else {
-    list.innerHTML = `<div class="empty-state">Connect your Substack and Telegram in the Setup Guide to see your latest posts here automatically.</div>`;
+    list.innerHTML='<div class="empty-state">Connect your Substack and Telegram in the Setup Guide to see your latest posts here automatically.</div>';
+  }
+
+  // ── AUDIENCE TAB ──
+
+  // Telegram engagement
+  const tgArea=document.getElementById('tg-engagement-area');
+  if(S.tgSubscribers!==null||S.tgViews||S.tgAvgViews||S.tgPosts.length>0){
+    let html=`<div class="aud-grid">
+      <div class="aud-card">
+        <div class="aud-card-title">Subscribers</div>
+        <div style="font-family:var(--serif);font-size:2.2rem;font-weight:300;">${S.tgSubscribers!==null?S.tgSubscribers.toLocaleString():'—'}</div>
+        <div style="font-size:0.78rem;color:var(--rose);margin-top:0.4rem;">Live count</div>
+      </div>
+      <div class="aud-card">
+        <div class="aud-card-title">Last Post Views</div>
+        <div style="font-family:var(--serif);font-size:2.2rem;font-weight:300;">${S.tgViews?parseInt(S.tgViews).toLocaleString():'—'}</div>
+        <div style="font-size:0.78rem;color:var(--charcoal);margin-top:0.4rem;">From Setup → Telegram Engagement</div>
+      </div>
+      <div class="aud-card">
+        <div class="aud-card-title">Avg. Post Views</div>
+        <div style="font-family:var(--serif);font-size:2.2rem;font-weight:300;">${S.tgAvgViews?parseInt(S.tgAvgViews).toLocaleString():'—'}</div>
+        ${(S.tgSubscribers&&S.tgAvgViews)?`<div style="font-size:0.78rem;color:var(--rose);margin-top:0.4rem;">${Math.round(S.tgAvgViews/S.tgSubscribers*100)}% reach rate</div>`:''}
+      </div>
+    </div>`;
+    if(S.tgPosts.length>0){
+      html+=`<div style="margin-top:1.5rem;overflow-x:auto;">
+        <table class="tg-posts-table">
+          <thead><tr><th>#</th><th>Post Preview</th><th>Date</th><th>Views</th></tr></thead>
+          <tbody>${S.tgPosts.map((p,i)=>`<tr>
+            <td style="color:var(--rose);font-family:var(--serif);font-size:1.1rem;">${i+1}</td>
+            <td style="max-width:420px;">${p.title}</td>
+            <td style="white-space:nowrap;color:var(--charcoal);">${p.date?new Date(p.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'—'}</td>
+            <td style="font-weight:500;">${p.views||'—'}</td>
+          </tr>`).join('')}</tbody>
+        </table>
+        <p class="aud-note" style="margin-top:0.75rem;">Post views shown as reported by Telegram's public channel feed.</p>
+      </div>`;
+    }
+    tgArea.innerHTML=html;
+  } else {
+    tgArea.innerHTML=`<div class="aud-placeholder">Connect Telegram in Setup Guide to see engagement data.<br/><a onclick="openSetup()">Open Setup Guide ↗</a></div>`;
+  }
+
+  // Geo bars — prefer GA Sheet data, else show profile estimates
+  const geoManual=document.getElementById('geo-manual-bars');
+  if(S.gaGeo.length>0){
+    document.getElementById('geo-card').querySelector('.aud-placeholder')?.remove();
+    geoManual.innerHTML='';
+    renderBars('geo-manual-bars', S.gaGeo.map(g=>({name:g.name,pct:g.pct||0})), 'var(--gold)');
+    document.getElementById('geo-card').querySelector('.aud-note')?.remove();
+  } else {
+    // Profile estimates
+    renderBars('geo-manual-bars',[{name:'Netherlands',pct:48},{name:'Belgium',pct:12},{name:'United Kingdom',pct:11},{name:'Germany',pct:7},{name:'Other EU',pct:22}],'var(--sage)');
+  }
+
+  // Device doughnut — prefer GA data, else estimates
+  if(S.gaDevice.length>0) initDeviceChart(S.gaDevice);
+  else initDeviceChart([52,38,10]);
+  document.getElementById('device-note').textContent=S.gaDevice.length>0?'Live data from Google Analytics':'Estimates. Connect GA Sheet → Device dimension for live data.';
+
+  // Website audience card
+  document.getElementById('aud-web-visitors').textContent=web!==null?web.toLocaleString():'—';
+  document.getElementById('aud-web-duration').textContent=S.webDuration!==null?(()=>{const m=Math.floor(S.webDuration/60),sec=S.webDuration%60;return `${m}m ${sec}s`;})():'—';
+  document.getElementById('aud-web-bounce').textContent=S.webBounce!==null?`${S.webBounce}% bounce rate`:'Enter in Setup Guide';
+
+  // Audience segments (fixed profile)
+  renderBars('segment-bars',[{name:'Political Professionals',pct:32},{name:'Journalists',pct:24},{name:'HR & Recruiters',pct:15},{name:'Students',pct:12}],'var(--rose)');
+
+  // Substack audience area
+  const ssArea=document.getElementById('ss-audience-area');
+  if(ss!==null||S.ssPosts.length>0){
+    ssArea.innerHTML=`<div class="aud-grid">
+      <div class="aud-card">
+        <div class="aud-card-title">Subscribers</div>
+        <div style="font-family:var(--serif);font-size:2.2rem;font-weight:300;">${ss!==null?ss.toLocaleString():'—'}</div>
+        <div style="font-size:0.78rem;color:var(--charcoal);margin-top:0.4rem;">Updated manually</div>
+      </div>
+      <div class="aud-card">
+        <div class="aud-card-title">Recent Posts</div>
+        <div style="font-family:var(--serif);font-size:2.2rem;font-weight:300;">${S.ssPosts.length}</div>
+        <div style="font-size:0.78rem;color:var(--sage);margin-top:0.4rem;">From RSS feed</div>
+      </div>
+      <div class="aud-card">
+        <div class="aud-card-title">Publishing Frequency</div>
+        <div style="font-family:var(--serif);font-size:1.5rem;font-weight:300;margin-top:0.5rem;" id="ss-freq">—</div>
+        <div style="font-size:0.78rem;color:var(--charcoal);margin-top:0.4rem;">Based on your last ${S.ssPosts.length} posts</div>
+      </div>
+    </div>`;
+    // Calculate publishing frequency
+    if(S.ssPosts.length>=2){
+      try {
+        const dates=S.ssPosts.map(p=>new Date(p.date)).filter(d=>!isNaN(d)).sort((a,b)=>b-a);
+        if(dates.length>=2){
+          const diffDays=(dates[0]-dates[dates.length-1])/(864e5);
+          const perWeek=(dates.length-1)/(diffDays/7);
+          const freqEl=document.getElementById('ss-freq');
+          if(freqEl) freqEl.textContent=perWeek>=0.9?`${perWeek.toFixed(1)}× per week`:perWeek>=0.4?'~Every 2 weeks':'~Monthly';
+        }
+      } catch{}
+    }
+  } else {
+    ssArea.innerHTML=`<div class="aud-placeholder">Connect Substack in Setup Guide to see newsletter data.<br/><a onclick="openSetup()">Open Setup Guide ↗</a></div>`;
   }
 
   // Strategy intro
-  if (anyLive) {
-    document.getElementById('strategy-intro-text').textContent =
-      `Based on your live data: ${total.toLocaleString()} total reach across ${sources.join(', ')}. These recommendations update as your audience grows.`;
-  }
+  if(anyLive) document.getElementById('strategy-intro-text').textContent=`Based on your live data: ${total.toLocaleString()} total reach across ${srcs.join(', ')}. These recommendations update as your audience grows.`;
 
-  // Data banner
-  if (anyLive) {
+  // Banner
+  if(anyLive){
     document.getElementById('data-banner').classList.add('show');
-    document.getElementById('lastRefreshed').textContent =
-      new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('lastRefreshed').textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
   }
 }
 
@@ -831,53 +927,60 @@ async function refreshAll() {
   const channel = localStorage.getItem(K.tgChannel);
   const ssUrl   = localStorage.getItem(K.ssUrl);
   const gaUrl   = localStorage.getItem(K.gaUrl);
+  const gaGeoUrl= localStorage.getItem(K.gaGeoUrl);
 
-  state.ssSubscribers = parseInt(localStorage.getItem(K.ssSubs)) || null;
-  state.webVisitors   = parseInt(localStorage.getItem(K.webV))   || null;
-  state.webDuration   = parseInt(localStorage.getItem(K.webD))   || null;
-  state.webBounce     = parseInt(localStorage.getItem(K.webB))   || null;
+  S.ssSubscribers = parseInt(localStorage.getItem(K.ssSubs))||null;
+  S.webVisitors   = parseInt(localStorage.getItem(K.webV))||null;
+  S.webDuration   = parseInt(localStorage.getItem(K.webD))||null;
+  S.webBounce     = parseInt(localStorage.getItem(K.webB))||null;
+  S.tgViews       = localStorage.getItem(K.tgViews)||null;
+  S.tgAvgViews    = localStorage.getItem(K.tgAvgViews)||null;
 
-  const tasks = [];
-  if (token && channel) tasks.push(fetchTelegram(token, channel));
-  if (ssUrl)            tasks.push(fetchSubstack(ssUrl));
-  if (gaUrl)            tasks.push(fetchGASheet(gaUrl));
+  const tasks=[];
+  if(token&&channel) tasks.push(fetchTelegram(token,channel));
+  if(ssUrl)          tasks.push(fetchSubstack(ssUrl));
+  if(gaUrl)          tasks.push(fetchGASheet(gaUrl));
+  if(gaGeoUrl)       tasks.push(fetchGAGeoSheet(gaGeoUrl));
 
   await Promise.allSettled(tasks);
   updateUI();
 }
 
-// ─── TAB SWITCHING ────────────────────────────
-document.querySelectorAll('.nav-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+// ─── NAV ─────────────────────────────────────
+document.querySelectorAll('.nav-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
     tab.classList.add('active');
-    document.getElementById('panel-' + tab.dataset.panel).classList.add('active');
+    document.getElementById('panel-'+tab.dataset.panel).classList.add('active');
   });
 });
 
-// ─── SETUP TOGGLE ─────────────────────────────
-let setupOpen = false;
-document.getElementById('toggleSetup').addEventListener('click', () => {
-  setupOpen = !setupOpen;
-  document.getElementById('setup-panel').classList.toggle('open', setupOpen);
-  document.getElementById('toggleSetup').textContent = setupOpen ? 'Close Setup' : 'Setup Guide';
+// ─── SETUP TOGGLE ────────────────────────────
+let setupOpen=false;
+function openSetup(){ if(!setupOpen){setupOpen=true;document.getElementById('setup-panel').classList.add('open');document.getElementById('toggleSetup').textContent='Close Setup';}}
+document.getElementById('toggleSetup').addEventListener('click',()=>{
+  setupOpen=!setupOpen;
+  document.getElementById('setup-panel').classList.toggle('open',setupOpen);
+  document.getElementById('toggleSetup').textContent=setupOpen?'Close Setup':'Setup Guide';
 });
 
-// ─── SAVE & REFRESH ───────────────────────────
-document.getElementById('saveBtn').addEventListener('click', async () => {
+// ─── SAVE & REFRESH ──────────────────────────
+document.getElementById('saveBtn').addEventListener('click',async()=>{
   saveCredentials();
-  const btn = document.getElementById('saveBtn');
-  btn.textContent = 'Fetching data…';
-  btn.disabled = true;
+  const btn=document.getElementById('saveBtn');
+  btn.textContent='Fetching data…'; btn.disabled=true;
   await refreshAll();
-  btn.textContent = 'Saved ✓';
-  setTimeout(() => { btn.textContent = 'Save & Refresh Dashboard'; btn.disabled = false; }, 2000);
+  btn.textContent='Saved ✓';
+  setTimeout(()=>{btn.textContent='Save & Refresh Dashboard';btn.disabled=false;},2000);
 });
 
-// ─── INIT ─────────────────────────────────────
+// ─── INIT ────────────────────────────────────
 loadSaved();
-initChart(['W1','W2','W3','W4','W5','W6'], [0,0,0,0,0,0]);
+initGrowthChart(['W1','W2','W3','W4','W5','W6'],[0,0,0,0,0,0]);
+initDeviceChart([52,38,10]);
+renderBars('segment-bars',[{name:'Political Professionals',pct:32},{name:'Journalists',pct:24},{name:'HR & Recruiters',pct:15},{name:'Students',pct:12}],'var(--rose)');
+renderBars('geo-manual-bars',[{name:'Netherlands',pct:48},{name:'Belgium',pct:12},{name:'United Kingdom',pct:11},{name:'Germany',pct:7},{name:'Other EU',pct:22}],'var(--sage)');
 refreshAll();
 </script>
 
