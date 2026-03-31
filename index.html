@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EVGENIYA — Political Communication Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&family=Italiana&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:      #0a0a0a;
+      --stone:    #f8f7f4;
+      --rose:     #c5a297;
+      --sage:     #9ca896;
+      --cream:    #fefdfb;
+      --charcoal: #3a3a3a;
+      --pearl:    #e8e6e0;
+      --gold:     #b8936f;
+      --serif:    'Cormorant Garamond', Georgia, serif;
+      --sans:     'Montserrat', sans-serif;
+      --accent:   'Italiana', serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      background: var(--cream);
+      font-family: var(--sans);
+      color: var(--ink);
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: rgba(248,247,244,0.95);
+      border-bottom: 1px solid var(--pearl);
+      padding: 2rem 3rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .masthead-title {
+      font-family: var(--accent);
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+    }
+    .masthead-sub {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-top: 0.25rem;
+      color: var(--charcoal);
+      font-weight: 300;
+    }
+    .btn-setup {
+      background: var(--ink);
+      color: var(--cream);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-weight: 500;
+      font-family: var(--sans);
+      transition: background 0.3s, transform 0.2s;
+    }
+    .btn-setup:hover { background: var(--rose); transform: translateY(-2px); }
+
+    /* ── SETUP PANEL ── */
+    #setup-panel {
+      display: none;
+      background: white;
+      border-bottom: 1px solid var(--pearl);
+      padding: 3rem;
+      animation: slideDown 0.4s ease;
+    }
+    #setup-panel.open { display: block; }
+    .setup-inner { max-width: 1200px; margin: 0 auto; }
+    .setup-title {
+      font-family: var(--serif);
+      font-size: 2.5rem;
+      font-weight: 300;
+      margin-bottom: 2rem;
+    }
+    .setup-step {
+      padding-left: 2rem;
+      margin-bottom: 2.5rem;
+    }
+    .step-rose  { border-left: 3px solid var(--rose); }
+    .step-sage  { border-left: 3px solid var(--sage); }
+    .step-gold  { border-left: 3px solid var(--gold); }
+    .step-ink   { border-left: 3px solid var(--ink);  }
+    .step-title {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    .step-body { line-height: 1.8; font-size: 0.95rem; color: var(--charcoal); }
+    .step-body ol, .step-body ul { padding-left: 1.5rem; margin-top: 1rem; }
+    .step-body li { margin-bottom: 0.75rem; }
+    .step-body a { color: var(--rose); text-decoration: none; border-bottom: 1px solid var(--rose); }
+    .step-body code { background: var(--pearl); padding: 0.2rem 0.4rem; }
+    .input-block {
+      background: var(--stone);
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      border-left: 3px solid var(--gold);
+    }
+    .input-block label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.82rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .input-block input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--pearl);
+      font-size: 0.95rem;
+      font-family: var(--sans);
+      margin-bottom: 1rem;
+      background: white;
+      outline: none;
+    }
+    .input-block input:last-child { margin-bottom: 0; }
+    .save-bar {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 2rem;
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .btn-save {
+      background: var(--rose);
+      color: var(--cream);
+      border: none;
+      padding: 1rem 2.5rem;
+      font-size: 0.82rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: var(--sans);
+      font-weight: 500;
+      transition: transform 0.2s;
+    }
+    .btn-save:hover { transform: scale(1.05); }
+    .save-note { margin-top: 1rem; font-size: 0.82rem; opacity: 0.8; }
+
+    /* ── NAV ── */
+    nav {
+      background: white;
+      border-bottom: 1px solid var(--pearl);
+      position: sticky;
+      top: 86px;
+      z-index: 99;
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 3rem;
+      display: flex;
+      gap: 3rem;
+    }
+    .nav-tab {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 1.25rem 0;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      color: var(--charcoal);
+      font-weight: 400;
+      font-family: var(--sans);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .nav-tab.active {
+      border-bottom-color: var(--ink);
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    /* ── MAIN ── */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 3rem;
+    }
+
+    /* panels */
+    .panel { display: none; }
+    .panel.active { display: block; animation: fadeIn 0.35s ease; }
+
+    /* ── OVERVIEW ── */
+    .hero-metric {
+      text-align: center;
+      margin-bottom: 5rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--pearl);
+    }
+    .hero-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--charcoal);
+      margin-bottom: 1rem;
+      font-weight: 300;
+    }
+    .hero-number {
+      font-family: var(--serif);
+      font-size: 5rem;
+      font-weight: 300;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .hero-change { font-size: 0.9rem; color: var(--rose); font-weight: 500; letter-spacing: 0.05em; }
+
+    .section-title {
+      font-family: var(--serif);
+      font-size: 1.75rem;
+      font-weight: 300;
+      margin-bottom: 2rem;
+    }
+    .chart-wrap { margin-bottom: 5rem; }
+    canvas { max-height: 300px; }
+
+    .platform-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+    .platform-card {
+      padding: 2.5rem 2rem;
+      background: white;
+      border: 1px solid var(--pearl);
+      transition: border-color 0.3s, transform 0.3s;
+      cursor: pointer;
+    }
+    .platform-card:hover { border-color: var(--rose); transform: translateY(-4px); }
+    .card-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--charcoal);
+      margin-bottom: 1rem;
+      font-weight: 300;
+    }
+    .card-number {
+      font-family: var(--serif);
+      font-size: 2.5rem;
+      font-weight: 300;
+      margin-bottom: 0.5rem;
+    }
+    .card-rate { font-size: 0.85rem; color: var(--rose); font-weight: 500; }
+
+    /* ── CONTENT ── */
+    .page-title {
+      font-family: var(--serif);
+      font-size: 2.25rem;
+      font-weight: 300;
+      margin-bottom: 3rem;
+    }
+    .content-list { display: flex; flex-direction: column; gap: 2rem; }
+    .content-item {
+      display: flex;
+      align-items: center;
+      padding: 2rem;
+      background: white;
+      border: 1px solid var(--pearl);
+      transition: border-color 0.3s, padding-left 0.3s;
+      cursor: pointer;
+    }
+    .content-item:hover { border-color: var(--rose); padding-left: 2.5rem; }
+    .content-rank {
+      font-family: var(--serif);
+      font-size: 3rem;
+      font-weight: 300;
+      color: var(--rose);
+      min-width: 80px;
+    }
+    .content-info { flex: 1; }
+    .content-name {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 400;
+      margin-bottom: 0.4rem;
+    }
+    .content-sub { font-size: 0.85rem; color: var(--charcoal); }
+    .content-score { font-family: var(--serif); font-size: 2rem; font-weight: 300; }
+
+    .insight-box {
+      margin-top: 4rem;
+      padding: 3rem;
+      background: var(--stone);
+      text-align: center;
+    }
+    .insight-box h3 {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      font-weight: 300;
+      margin-bottom: 1rem;
+    }
+    .insight-box p { font-size: 0.95rem; line-height: 1.8; color: var(--charcoal); max-width: 600px; margin: 0 auto; }
+
+    /* ── AUDIENCE ── */
+    .audience-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 3rem;
+      margin-bottom: 4rem;
+    }
+    .aud-card {
+      padding: 2.5rem;
+      background: white;
+      border: 1px solid var(--pearl);
+    }
+    .aud-card-title {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--charcoal);
+      margin-bottom: 2rem;
+      font-weight: 300;
+    }
+    .bar-row { margin-bottom: 1.5rem; }
+    .bar-top { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+    .bar-name { font-size: 0.9rem; }
+    .bar-pct-rose { font-family: var(--serif); font-size: 1.1rem; color: var(--rose); }
+    .bar-pct-sage { font-family: var(--serif); font-size: 1.1rem; color: var(--sage); }
+    .bar-track { height: 2px; background: var(--pearl); position: relative; }
+    .bar-fill-rose { position: absolute; top: 0; left: 0; height: 100%; background: var(--rose); transition: width 0.6s ease; }
+    .bar-fill-sage { position: absolute; top: 0; left: 0; height: 100%; background: var(--sage); transition: width 0.6s ease; }
+
+    .advantage-box {
+      padding: 3rem;
+      background: var(--ink);
+      color: var(--cream);
+    }
+    .advantage-box h3 { font-family: var(--serif); font-size: 1.5rem; font-weight: 300; margin-bottom: 1.5rem; }
+    .advantage-box p { font-size: 0.95rem; line-height: 1.8; max-width: 700px; }
+
+    /* ── STRATEGY ── */
+    .strategy-intro { font-size: 0.95rem; color: var(--charcoal); margin-bottom: 3rem; line-height: 1.6; }
+    .recs-list { display: flex; flex-direction: column; gap: 2rem; }
+    .rec-card {
+      padding: 2.5rem;
+      background: white;
+      border: 1px solid var(--pearl);
+      transition: box-shadow 0.3s;
+      cursor: pointer;
+    }
+    .rec-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+    .rec-card-rose { border-left: 4px solid var(--rose); }
+    .rec-card-gold { border-left: 4px solid var(--gold); }
+    .rec-card-sage { border-left: 4px solid var(--sage); }
+    .rec-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; }
+    .rec-title { font-family: var(--serif); font-size: 1.5rem; font-weight: 400; flex: 1; }
+    .rec-badge {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.5rem 1rem;
+      background: var(--stone);
+      color: var(--charcoal);
+      white-space: nowrap;
+      margin-left: 1rem;
+    }
+    .rec-insight { font-size: 0.95rem; line-height: 1.7; color: var(--charcoal); margin-bottom: 1.5rem; }
+    .rec-action {
+      padding: 1.25rem;
+      background: var(--stone);
+      border-left: 2px solid var(--ink);
+    }
+    .action-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--charcoal);
+      margin-bottom: 0.5rem;
+    }
+    .action-text { font-size: 0.95rem; font-weight: 500; }
+
+    .roadmap {
+      margin-top: 4rem;
+      padding: 3rem;
+      background: var(--ink);
+      color: var(--cream);
+    }
+    .roadmap h3 { font-family: var(--serif); font-size: 1.75rem; font-weight: 300; margin-bottom: 2.5rem; }
+    .roadmap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+    .phase-month { font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.75rem; opacity: 0.7; }
+    .phase-focus { font-family: var(--serif); font-size: 1.3rem; font-weight: 400; margin-bottom: 1.5rem; }
+    .phase-items { list-style: none; font-size: 0.9rem; line-height: 1.8; }
+    .phase-items li { margin-bottom: 0.5rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--pearl);
+      padding: 2rem 3rem;
+      text-align: center;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--charcoal);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      header { padding: 1.5rem; }
+      main { padding: 2rem 1.5rem; }
+      .platform-grid { grid-template-columns: 1fr; }
+      .audience-grid { grid-template-columns: 1fr; }
+      .roadmap-grid { grid-template-columns: 1fr; }
+      .nav-inner { gap: 1.5rem; padding: 0 1.5rem; overflow-x: auto; }
+      .hero-number { font-size: 3.5rem; }
+    }
+  </style>
+
+</head>
+<body>
+
+<!-- HEADER -->
+
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="masthead-title">EVGENIYA</div>
+      <div class="masthead-sub">Political Communication Intelligence</div>
+    </div>
+    <button class="btn-setup" id="toggleSetup">Setup Guide</button>
+  </div>
+</header>
+
+<!-- SETUP PANEL -->
+
+<div id="setup-panel">
+  <div class="setup-inner">
+    <h2 class="setup-title">Setup Your Command Center</h2>
+
+```
+<!-- Step 1 -->
+<div class="setup-step step-rose">
+  <h3 class="step-title">Step 1: Google Analytics Setup</h3>
+  <div class="step-body">
+    <p><strong>Where:</strong> Your janeorlova.com website data</p>
+    <ol>
+      <li>Go to <a href="https://analytics.google.com" target="_blank">analytics.google.com</a></li>
+      <li>Click Admin (gear icon) → Property → API Quotas</li>
+      <li>Enable "Google Analytics Data API v1"</li>
+      <li>Go to <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Console</a></li>
+      <li>Create Credentials → API Key</li>
+      <li>Copy your <strong>Property ID</strong> (looks like "GA4-XXXXXXXXX")</li>
+      <li>Paste both in the settings below ↓</li>
+    </ol>
+    <div class="input-block">
+      <label>GA4 Property ID</label>
+      <input type="text" placeholder="e.g., 123456789" />
+      <label>API Key (Optional)</label>
+      <input type="password" placeholder="Your Google Analytics API key" />
+    </div>
+  </div>
+</div>
+
+<!-- Step 2 -->
+<div class="setup-step step-sage">
+  <h3 class="step-title">Step 2: Telegram Channel Analytics</h3>
+  <div class="step-body">
+    <p><strong>Where:</strong> Track your Telegram channel growth and engagement</p>
+    <ol>
+      <li>Open Telegram and search for <strong>@BotFather</strong></li>
+      <li>Send <code>/newbot</code></li>
+      <li>Follow instructions to create your analytics bot</li>
+      <li>You'll receive a token like: <code>123456:ABC-DEF...</code></li>
+      <li>Add the bot as admin to your channel</li>
+      <li>Paste your channel username and bot token below ↓</li>
+    </ol>
+    <div class="input-block">
+      <label>Telegram Channel Username</label>
+      <input type="text" placeholder="@yourchannel" />
+      <label>Bot Token</label>
+      <input type="password" placeholder="123456:ABC-DEF..." />
+    </div>
+  </div>
+</div>
+
+<!-- Step 3 -->
+<div class="setup-step step-gold">
+  <h3 class="step-title">Step 3: Substack Newsletter</h3>
+  <div class="step-body">
+    <p><strong>Where:</strong> Your Substack publication analytics</p>
+    <ol>
+      <li>Go to your Substack Dashboard → Stats</li>
+      <li>Manually note your subscriber count weekly</li>
+      <li>Use RSS feed: <code>yoursubstack.com/feed</code></li>
+      <li>Or use free tools like <a href="https://feedly.com" target="_blank">Feedly</a> to track engagement</li>
+    </ol>
+    <div class="input-block">
+      <label>Substack URL</label>
+      <input type="text" placeholder="yourname.substack.com" />
+    </div>
+  </div>
+</div>
+
+<!-- Step 4 -->
+<div class="setup-step step-ink">
+  <h3 class="step-title">Step 4: Alternative Free Analytics Tools</h3>
+  <div class="step-body">
+    <p><strong>Recommended free tools to enhance your tracking:</strong></p>
+    <ul style="list-style:none; padding-left: 0;">
+      <li style="margin-bottom:1rem; padding-left:1.5rem; position:relative;">
+        <span style="position:absolute;left:0;">📊</span>
+        <strong>Plausible Analytics</strong> (free tier) – Privacy-friendly GA alternative<br/>
+        <a href="https://plausible.io" target="_blank">plausible.io</a>
+      </li>
+      <li style="margin-bottom:1rem; padding-left:1.5rem; position:relative;">
+        <span style="position:absolute;left:0;">🔍</span>
+        <strong>Google Search Console</strong> (free) – SEO and search performance<br/>
+        <a href="https://search.google.com/search-console" target="_blank">search.google.com/search-console</a>
+      </li>
+      <li style="margin-bottom:1rem; padding-left:1.5rem; position:relative;">
+        <span style="position:absolute;left:0;">📈</span>
+        <strong>Tally</strong> (free) – Audience surveys and feedback<br/>
+        <a href="https://tally.so" target="_blank">tally.so</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="save-bar">
+  <button class="btn-save" id="saveBtn">Save Settings</button>
+  <p class="save-note">Settings are saved locally in your browser</p>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- NAV -->
+
+<nav>
+  <div class="nav-inner">
+    <button class="nav-tab active" data-panel="overview">Overview</button>
+    <button class="nav-tab" data-panel="content">Content</button>
+    <button class="nav-tab" data-panel="audience">Audience</button>
+    <button class="nav-tab" data-panel="strategy">Strategy</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+
+<main>
+
+  <!-- OVERVIEW -->
+
+  <section class="panel active" id="panel-overview">
+    <div class="hero-metric">
+      <div class="hero-label">Total Reach</div>
+      <div class="hero-number">2,412</div>
+      <div class="hero-change">+18% this month</div>
+    </div>
+
+```
+<div class="chart-wrap">
+  <h2 class="section-title">Growth Trajectory</h2>
+  <canvas id="growthChart"></canvas>
+</div>
+
+<div class="platform-grid">
+  <div class="platform-card">
+    <div class="card-label">Telegram</div>
+    <div class="card-number">521</div>
+    <div class="card-rate">8.4% engagement</div>
+  </div>
+  <div class="platform-card">
+    <div class="card-label">Substack</div>
+    <div class="card-number">412</div>
+    <div class="card-rate">12.7% engagement</div>
+  </div>
+  <div class="platform-card">
+    <div class="card-label">Website</div>
+    <div class="card-number">978</div>
+    <div class="card-rate">3.2% engagement</div>
+  </div>
+</div>
+```
+
+  </section>
+
+  <!-- CONTENT -->
+
+  <section class="panel" id="panel-content">
+    <h2 class="page-title">Top Performing Content</h2>
+    <div class="content-list">
+      <div class="content-item">
+        <div class="content-rank">1</div>
+        <div class="content-info">
+          <div class="content-name">Coalition Analysis: Data Deep-Dive</div>
+          <div class="content-sub">Performance Score</div>
+        </div>
+        <div class="content-score">94</div>
+      </div>
+      <div class="content-item">
+        <div class="content-rank">2</div>
+        <div class="content-info">
+          <div class="content-name">EU Migration in Five Charts</div>
+          <div class="content-sub">Performance Score</div>
+        </div>
+        <div class="content-score">87</div>
+      </div>
+      <div class="content-item">
+        <div class="content-rank">3</div>
+        <div class="content-info">
+          <div class="content-name">Multilingual Political Discourse</div>
+          <div class="content-sub">Performance Score</div>
+        </div>
+        <div class="content-score">81</div>
+      </div>
+    </div>
+    <div class="insight-box">
+      <h3>Content Insights</h3>
+      <p>Your data-driven political analysis performs 34% better than opinion pieces. Wednesday morning publications see 2.3× higher engagement.</p>
+    </div>
+  </section>
+
+  <!-- AUDIENCE -->
+
+  <section class="panel" id="panel-audience">
+    <h2 class="page-title">Your Audience</h2>
+    <div class="audience-grid">
+      <div class="aud-card">
+        <div class="aud-card-title">Primary Segments</div>
+        <div class="bar-row">
+          <div class="bar-top">
+            <span class="bar-name">Political Professionals</span>
+            <span class="bar-pct-rose">32%</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill-rose" style="width:32%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-top">
+            <span class="bar-name">Journalists</span>
+            <span class="bar-pct-rose">24%</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill-rose" style="width:24%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-top">
+            <span class="bar-name">HR &amp; Recruiters</span>
+            <span class="bar-pct-rose">15%</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill-rose" style="width:15%"></div></div>
+        </div>
+      </div>
+
+```
+  <div class="aud-card">
+    <div class="aud-card-title">Geographic Distribution</div>
+    <div class="bar-row">
+      <div class="bar-top">
+        <span class="bar-name">Netherlands</span>
+        <span class="bar-pct-sage">48%</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill-sage" style="width:48%"></div></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-top">
+        <span class="bar-name">Belgium</span>
+        <span class="bar-pct-sage">12%</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill-sage" style="width:12%"></div></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-top">
+        <span class="bar-name">United Kingdom</span>
+        <span class="bar-pct-sage">11%</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill-sage" style="width:11%"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="advantage-box">
+  <h3>Your Unique Advantage</h3>
+  <p>Your multilingual background (6 languages) positions you uniquely in Dutch political communication. 48% of your audience is in the Netherlands, with strong engagement from EU policy professionals.</p>
+</div>
+```
+
+  </section>
+
+  <!-- STRATEGY -->
+
+  <section class="panel" id="panel-strategy">
+    <h2 class="page-title">Strategic Recommendations</h2>
+    <p class="strategy-intro">Personalised insights based on your analytics, audience behaviour, and market positioning.</p>
+
+```
+<div class="recs-list">
+  <div class="rec-card rec-card-rose">
+    <div class="rec-header">
+      <div class="rec-title">Launch Weekly Data Series</div>
+      <div class="rec-badge">High Impact</div>
+    </div>
+    <p class="rec-insight">Your data analysis posts get 34% more engagement. Create a signature weekly series combining Dutch politics + data visualisation.</p>
+    <div class="rec-action">
+      <div class="action-label">Action Step</div>
+      <div class="action-text">Start with "Politics by Numbers" every Wednesday at 9 AM</div>
+    </div>
+  </div>
+
+  <div class="rec-card rec-card-gold">
+    <div class="rec-header">
+      <div class="rec-title">Leverage Multilingual Edge</div>
+      <div class="rec-badge">Unique Advantage</div>
+    </div>
+    <p class="rec-insight">Only 3% of Dutch political communicators operate in 6 languages. Cross-cultural analysis is your differentiator.</p>
+    <div class="rec-action">
+      <div class="action-label">Action Step</div>
+      <div class="action-text">Create comparative content: "How EU policy is discussed in NL vs IT vs UK"</div>
+    </div>
+  </div>
+
+  <div class="rec-card rec-card-sage">
+    <div class="rec-header">
+      <div class="rec-title">Network with Journalists</div>
+      <div class="rec-badge">Career Growth</div>
+    </div>
+    <p class="rec-insight">Journalists are 24% of your engaged audience and amplify your reach 3.2× on average.</p>
+    <div class="rec-action">
+      <div class="action-label">Action Step</div>
+      <div class="action-text">Engage with NOS, NRC, and Politico journalists on Twitter 9–11 AM weekdays</div>
+    </div>
+  </div>
+</div>
+
+<div class="roadmap">
+  <h3>90-Day Growth Roadmap</h3>
+  <div class="roadmap-grid">
+    <div>
+      <div class="phase-month">Month 1</div>
+      <div class="phase-focus">Foundation</div>
+      <ul class="phase-items">
+        <li>→ Launch data series</li>
+        <li>→ Optimise SEO</li>
+        <li>→ Network mapping</li>
+      </ul>
+    </div>
+    <div>
+      <div class="phase-month">Month 2</div>
+      <div class="phase-focus">Expansion</div>
+      <ul class="phase-items">
+        <li>→ 2 collaborations</li>
+        <li>→ Speaking event</li>
+        <li>→ Media pitch</li>
+      </ul>
+    </div>
+    <div>
+      <div class="phase-month">Month 3</div>
+      <div class="phase-focus">Scale</div>
+      <ul class="phase-items">
+        <li>→ Viral content</li>
+        <li>→ Partnership</li>
+        <li>→ Career move</li>
+      </ul>
+    </div>
+  </div>
+</div>
+```
+
+  </section>
+
+</main>
+
+<footer>
+  <div style="max-width:1200px;margin:0 auto;">
+    Political Communication Command Center &bull; Evgeniya Orlova
+  </div>
+</footer>
+
+<script>
+  // ── Tab switching ──
+  const tabs   = document.querySelectorAll('.nav-tab');
+  const panels = document.querySelectorAll('.panel');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('panel-' + tab.dataset.panel).classList.add('active');
+    });
+  });
+
+  // ── Setup panel toggle ──
+  const toggleBtn  = document.getElementById('toggleSetup');
+  const setupPanel = document.getElementById('setup-panel');
+  let setupOpen = false;
+
+  toggleBtn.addEventListener('click', () => {
+    setupOpen = !setupOpen;
+    setupPanel.classList.toggle('open', setupOpen);
+    toggleBtn.textContent = setupOpen ? 'Close Setup' : 'Setup Guide';
+  });
+
+  // ── Save settings (localStorage) ──
+  document.getElementById('saveBtn').addEventListener('click', () => {
+    const inputs = setupPanel.querySelectorAll('input[type="text"]');
+    inputs.forEach(input => {
+      if (input.placeholder && input.value) {
+        localStorage.setItem(input.placeholder, input.value);
+      }
+    });
+    const btn = document.getElementById('saveBtn');
+    btn.textContent = 'Saved ✓';
+    setTimeout(() => btn.textContent = 'Save Settings', 2000);
+  });
+
+  // ── Growth Chart (Chart.js) ──
+  const ctx = document.getElementById('growthChart').getContext('2d');
+
+  const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+  gradient.addColorStop(0,   'rgba(197,162,151,0.25)');
+  gradient.addColorStop(1,   'rgba(197,162,151,0)');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['W1','W2','W3','W4','W5','W6'],
+      datasets: [{
+        data: [340, 428, 562, 687, 834, 978],
+        borderColor: '#c5a297',
+        borderWidth: 2,
+        pointBackgroundColor: '#c5a297',
+        pointRadius: 4,
+        fill: true,
+        backgroundColor: gradient,
+        tension: 0.4
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { family: "'Montserrat', sans-serif", size: 11 }, color: '#3a3a3a' } },
+        y: { grid: { color: 'rgba(0,0,0,0.04)' }, border: { display: false }, ticks: { font: { family: "'Montserrat', sans-serif", size: 11 }, color: '#3a3a3a' } }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
