@@ -251,16 +251,16 @@ footer { border-top: 1px solid var(--pearl); padding: 2rem 3rem; text-align: cen
   <!-- SUBSTACK -->
   <div class="setup-step step-sage">
     <h3 class="step-title">Substack Newsletter</h3>
-    <div class="step-badge">📡 Posts via RSS · Subscriber count: manual entry</div>
+    <div class="step-badge">📡 Posts via Substack API · Subscriber count: manual entry</div>
     <div class="step-body">
       <ol>
-        <li>Your Substack RSS is at <code>yourname.substack.com/feed</code></li>
-        <li>Enter your URL below exactly as it appears in your browser</li>
+        <li>Enter just your subdomain, e.g. <code>janeorlova.substack.com</code></li>
+        <li><strong>No https:// prefix</strong> — just the domain name</li>
         <li>Subscriber count: Substack Dashboard → Settings → Subscribers</li>
       </ol>
       <div class="input-block">
-        <label>Substack URL</label>
-        <input type="text" id="ss-url" placeholder="yourname.substack.com" autocomplete="off"/>
+        <label>Substack domain (no https://)</label>
+        <input type="text" id="ss-url" placeholder="janeorlova.substack.com" autocomplete="off"/>
         <label>Current Subscriber Count</label>
         <input type="number" id="ss-subs" placeholder="e.g. 412" autocomplete="off"/>
         <button class="fetch-btn" onclick="testSubstack()">Fetch Latest Posts</button>
@@ -647,38 +647,83 @@ async function testTelegram() {
 }
 
 // ─── SUBSTACK ────────────────────────────────
+// Substack has a public JSON API that doesn't need a proxy:
+// https://yourname.substack.com/api/v1/posts?limit=12
+// This works directly from the browser with no CORS issues.
+function cleanSubstackUrl(raw) {
+  // Accepts: janeorlova.substack.com, https://janeorlova.substack.com, janeorlova.substack.com/
+  return raw.trim().replace(/^https?:\/\//,'').replace(/\/+$/,'').split('/')[0];
+}
+
 async function fetchSubstack(url) {
   if(!url) return;
-  let clean = url.trim().replace(/^https?:\/\//,'').replace(/\/+$/,'');
-  const feedUrl = `https://${clean}/feed`;
+  const host = cleanSubstackUrl(url);
+  // Method 1: Substack public JSON API (no proxy needed)
+  try {
+    const r = await fetch(`https://${host}/api/v1/posts?limit=12`, {
+      headers: { 'Accept': 'application/json' },
+      signal: AbortSignal.timeout(8000)
+    });
+    if(r.ok) {
+      const posts = await r.json();
+      if(Array.isArray(posts) && posts.length > 0) {
+        S.ssPosts = posts.map(p => ({
+          title:  p.title || 'Untitled',
+          date:   p.post_date || p.published_at || '',
+          link:   p.canonical_url || `https://${host}/p/${p.slug}`,
+          source: 'Substack',
+        }));
+        return; // success — don't fall through
+      }
+    }
+  } catch(e) { console.warn('Substack JSON API failed, trying RSS fallback', e); }
+
+  // Method 2: RSS via proxies (fallback)
+  const feedUrl = `https://${host}/feed`;
   try {
     const text = await fetchWithFallback(feedUrl);
-    const xml = new DOMParser().parseFromString(text,'text/xml');
-    const parseErr = xml.querySelector('parsererror');
-    if(parseErr) throw new Error('XML parse error');
-    S.ssPosts = Array.from(xml.querySelectorAll('item')).slice(0,10).map(item=>({
-      title: item.querySelector('title')?.textContent?.trim()||'Untitled',
-      date:  item.querySelector('pubDate')?.textContent||'',
-      link:  item.querySelector('link')?.textContent||'#',
-      source:'Substack',
-    }));
-  } catch(e) { console.warn('Substack RSS error:',e); }
+    const xml = new DOMParser().parseFromString(text, 'text/xml');
+    if(!xml.querySelector('parsererror')) {
+      S.ssPosts = Array.from(xml.querySelectorAll('item')).slice(0,10).map(item=>({
+        title:  item.querySelector('title')?.textContent?.trim()||'Untitled',
+        date:   item.querySelector('pubDate')?.textContent||'',
+        link:   item.querySelector('link')?.textContent||'#',
+        source: 'Substack',
+      }));
+    }
+  } catch(e) { console.warn('Substack RSS fallback also failed:', e); }
 }
 
 async function testSubstack() {
-  const url=document.getElementById('ss-url').value.trim();
-  const st=document.getElementById('ss-status');
-  st.textContent='Fetching…'; st.className='fetch-status';
-  if(!url){st.textContent='Please enter your Substack URL.';st.className='fetch-status err';return;}
-  let clean=url.replace(/^https?:\/\//,'').replace(/\/+$/,'');
-  const feedUrl=`https://${clean}/feed`;
+  const url = document.getElementById('ss-url').value.trim();
+  const st  = document.getElementById('ss-status');
+  st.textContent = 'Fetching…'; st.className = 'fetch-status';
+  if(!url){ st.textContent = 'Please enter your Substack URL.'; st.className = 'fetch-status err'; return; }
+  const host = cleanSubstackUrl(url);
+  // Try JSON API first
   try {
-    const text=await fetchWithFallback(feedUrl);
-    const xml=new DOMParser().parseFromString(text,'text/xml');
-    const n=xml.querySelectorAll('item').length;
-    if(n>0){st.textContent=`✓ Found ${n} posts in your Substack feed`;st.className='fetch-status ok';}
-    else{st.textContent='No posts found — double-check your URL (e.g. yourname.substack.com)';st.className='fetch-status err';}
-  } catch {st.textContent='Could not reach feed. Check URL and try again.';st.className='fetch-status err';}
+    const r = await fetch(`https://${host}/api/v1/posts?limit=12`, {
+      headers: { 'Accept': 'application/json' },
+      signal: AbortSignal.timeout(8000)
+    });
+    if(r.ok) {
+      const posts = await r.json();
+      if(Array.isArray(posts) && posts.length > 0) {
+        st.textContent = `✓ Found ${posts.length} posts from ${host}`;
+        st.className = 'fetch-status ok';
+        return;
+      }
+    }
+  } catch {}
+  // Try RSS fallback
+  try {
+    const text = await fetchWithFallback(`https://${host}/feed`);
+    const xml  = new DOMParser().parseFromString(text, 'text/xml');
+    const n    = xml.querySelectorAll('item').length;
+    if(n > 0){ st.textContent = `✓ Found ${n} posts via RSS`; st.className = 'fetch-status ok'; return; }
+  } catch {}
+  st.textContent = `Could not reach ${host}. Make sure it is a valid public Substack.`;
+  st.className = 'fetch-status err';
 }
 
 // ─── GA SHEETS ───────────────────────────────
