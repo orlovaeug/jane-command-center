@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Mockup — Evgeniya Orlova</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+–bg:        #F4F2EE;
+–card:      #FFFFFF;
+–ink:       #1A1814;
+–ink-soft:  #7A7670;
+–ink-muted: #B8B4AE;
+–accent:    #C0603A;
+–accent-lt: #F5EDE8;
+–rule:      #E4E0D8;
+–green:     #3D6B52;
+–green-lt:  #EBF2EE;
+–radius:    6px;
+–shadow:    0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+}
+
+body {
+font-family: ‘DM Sans’, sans-serif;
+background: var(–bg);
+color: var(–ink);
+min-height: 100vh;
+padding: 0;
+}
+
+/* ── NAV ── */
+.nav {
+background: var(–ink);
+padding: 0 40px;
+display: flex;
+align-items: center;
+gap: 0;
+height: 52px;
+}
+.nav-brand {
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: #fff;
+margin-right: 48px;
+opacity: 0.9;
+}
+.nav-tab {
+font-size: 12px;
+color: rgba(255,255,255,0.45);
+padding: 0 20px;
+height: 52px;
+display: flex;
+align-items: center;
+border-bottom: 2px solid transparent;
+cursor: pointer;
+letter-spacing: 0.03em;
+transition: all 0.15s;
+}
+.nav-tab.active {
+color: #fff;
+border-bottom-color: var(–accent);
+}
+.nav-tab:hover:not(.active) { color: rgba(255,255,255,0.7); }
+
+/* ── DASHBOARD SWITCHER ── */
+.switcher {
+background: var(–card);
+border-bottom: 1px solid var(–rule);
+padding: 12px 40px;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+.switch-btn {
+font-size: 11px;
+font-weight: 500;
+letter-spacing: 0.06em;
+text-transform: uppercase;
+padding: 6px 16px;
+border-radius: 100px;
+border: 1px solid var(–rule);
+background: transparent;
+color: var(–ink-soft);
+cursor: pointer;
+transition: all 0.15s;
+}
+.switch-btn.active {
+background: var(–ink);
+color: #fff;
+border-color: var(–ink);
+}
+.switch-divider {
+font-size: 11px;
+color: var(–ink-muted);
+margin: 0 8px;
+}
+
+/* ── MAIN ── */
+.main { padding: 36px 40px 60px; }
+
+/* ── PAGE HEADER ── */
+.page-header {
+display: flex;
+align-items: flex-start;
+justify-content: space-between;
+margin-bottom: 32px;
+}
+.page-title {
+font-size: 22px;
+font-weight: 600;
+color: var(–ink);
+letter-spacing: -0.02em;
+margin-bottom: 4px;
+}
+.page-subtitle {
+font-size: 12px;
+color: var(–ink-soft);
+letter-spacing: 0.01em;
+}
+.insight-pill {
+background: var(–accent-lt);
+border-left: 2px solid var(–accent);
+padding: 8px 14px;
+border-radius: 0 4px 4px 0;
+font-size: 11.5px;
+color: var(–accent);
+font-weight: 500;
+max-width: 320px;
+line-height: 1.5;
+}
+.insight-label {
+font-size: 9px;
+text-transform: uppercase;
+letter-spacing: 0.1em;
+color: var(–accent);
+opacity: 0.7;
+margin-bottom: 2px;
+}
+
+/* ── SCORECARDS ── */
+.scorecard-row {
+display: grid;
+grid-template-columns: repeat(5, 1fr);
+gap: 12px;
+margin-bottom: 24px;
+}
+.scorecard {
+background: var(–card);
+border-radius: var(–radius);
+padding: 20px 20px 18px;
+box-shadow: var(–shadow);
+border: 1px solid var(–rule);
+position: relative;
+overflow: hidden;
+}
+.scorecard::after {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 2px;
+background: var(–rule);
+}
+.scorecard.accent::after { background: var(–accent); }
+.scorecard.green::after  { background: var(–green); }
+.sc-label {
+font-size: 10px;
+text-transform: uppercase;
+letter-spacing: 0.1em;
+color: var(–ink-muted);
+margin-bottom: 10px;
+font-weight: 500;
+}
+.sc-value {
+font-size: 28px;
+font-weight: 600;
+color: var(–ink);
+letter-spacing: -0.03em;
+line-height: 1;
+margin-bottom: 8px;
+font-family: ‘DM Mono’, monospace;
+}
+.sc-delta {
+font-size: 11px;
+font-weight: 500;
+display: flex;
+align-items: center;
+gap: 4px;
+}
+.sc-delta.up   { color: var(–green); }
+.sc-delta.down { color: #B94040; }
+.sc-delta.neutral { color: var(–ink-muted); }
+.sc-platform {
+font-size: 9px;
+text-transform: uppercase;
+letter-spacing: 0.1em;
+color: var(–ink-muted);
+margin-top: 4px;
+}
+
+/* ── CHARTS ROW ── */
+.charts-row {
+display: grid;
+grid-template-columns: 2fr 1fr;
+gap: 12px;
+margin-bottom: 24px;
+}
+.charts-row-3 {
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
+gap: 12px;
+margin-bottom: 24px;
+}
+.card {
+background: var(–card);
+border-radius: var(–radius);
+box-shadow: var(–shadow);
+border: 1px solid var(–rule);
+padding: 24px;
+}
+.card-title {
+font-size: 10px;
+text-transform: uppercase;
+letter-spacing: 0.1em;
+color: var(–ink-muted);
+margin-bottom: 18px;
+font-weight: 500;
+}
+
+/* ── SVG CHARTS ── */
+svg { display: block; }
+
+/* ── CHART LEGEND ── */
+.legend {
+display: flex;
+gap: 16px;
+margin-bottom: 12px;
+}
+.legend-item {
+display: flex;
+align-items: center;
+gap: 6px;
+font-size: 10px;
+color: var(–ink-soft);
+}
+.legend-dot {
+width: 8px; height: 8px;
+border-radius: 50%;
+}
+
+/* ── COUNTRY TABLE ── */
+.country-table { width: 100%; }
+.country-row {
+display: flex;
+align-items: center;
+padding: 8px 0;
+border-bottom: 1px solid var(–rule);
+gap: 12px;
+}
+.country-row:last-child { border-bottom: none; }
+.country-rank {
+font-size: 10px;
+color: var(–ink-muted);
+font-family: ‘DM Mono’, monospace;
+width: 16px;
+flex-shrink: 0;
+}
+.country-name {
+font-size: 12px;
+color: var(–ink);
+font-weight: 500;
+flex: 1;
+}
+.country-tag {
+font-size: 9px;
+padding: 2px 6px;
+border-radius: 100px;
+background: var(–accent-lt);
+color: var(–accent);
+font-weight: 500;
+letter-spacing: 0.04em;
+}
+.country-tag.neutral {
+background: var(–bg);
+color: var(–ink-soft);
+}
+.country-bar-wrap { width: 80px; }
+.country-bar {
+height: 3px;
+background: var(–rule);
+border-radius: 2px;
+overflow: hidden;
+}
+.country-bar-fill {
+height: 100%;
+background: var(–ink);
+border-radius: 2px;
+}
+.country-views {
+font-size: 11px;
+font-family: ‘DM Mono’, monospace;
+color: var(–ink-soft);
+text-align: right;
+width: 56px;
+flex-shrink: 0;
+}
+
+/* ── TABS INDICATOR ── */
+.page-indicator {
+display: flex;
+gap: 6px;
+align-items: center;
+padding: 0 40px 20px;
+}
+.pi-dot {
+width: 24px; height: 3px;
+border-radius: 2px;
+background: var(–rule);
+}
+.pi-dot.active { background: var(–ink); }
+
+/* ── FOOTER ── */
+.footer {
+padding: 16px 40px;
+border-top: 1px solid var(–rule);
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.footer-note {
+font-size: 10px;
+color: var(–ink-muted);
+letter-spacing: 0.03em;
+}
+
+/* ── SECTION LABEL ── */
+.section-label {
+font-size: 9px;
+text-transform: uppercase;
+letter-spacing: 0.14em;
+color: var(–ink-muted);
+margin-bottom: 10px;
+font-weight: 600;
+}
+
+/* ── DASHBOARD TOGGLE ── */
+#creator-dash, #youtube-dash { display: none; }
+#creator-dash.visible, #youtube-dash.visible { display: block; }
+</style>
+
+</head>
+<body>
+
+<!-- NAV -->
+
+<div class="nav">
+  <div class="nav-brand">Analytics</div>
+  <div class="nav-tab active" id="tab-creator" onclick="showDash('creator')">Creator Dashboard</div>
+  <div class="nav-tab" id="tab-youtube" onclick="showDash('youtube')">YouTube — Viral Video</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     CREATOR DASHBOARD
+══════════════════════════════════════════════════════════════ -->
+
+<div id="creator-dash" class="visible">
+
+  <!-- Page tabs -->
+
+  <div class="switcher">
+    <button class="switch-btn active">Executive Summary</button>
+    <button class="switch-btn">TikTok</button>
+    <button class="switch-btn">Instagram</button>
+    <button class="switch-btn">Shop & Outliers</button>
+    <div class="switch-divider">|</div>
+    <span style="font-size:11px;color:var(--ink-muted)">Apr 2025 – May 2026</span>
+  </div>
+
+  <div class="main">
+
+```
+<!-- Header -->
+<div class="page-header">
+  <div>
+    <div class="page-title">Executive Summary</div>
+    <div class="page-subtitle">Weekly performance — TikTok, Instagram & TikTok Shop</div>
+  </div>
+  <div class="insight-pill">
+    <div class="insight-label">Key insight</div>
+    Tutorial content drives 6× average views — highest completion rate of any format
+  </div>
+</div>
+
+<!-- Scorecards -->
+<div class="section-label">Platform overview</div>
+<div class="scorecard-row">
+  <div class="scorecard accent">
+    <div class="sc-label">TikTok Followers</div>
+    <div class="sc-value">36.7K</div>
+    <div class="sc-delta up">↑ +462 this week</div>
+    <div class="sc-platform">TikTok</div>
+  </div>
+  <div class="scorecard">
+    <div class="sc-label">Instagram Followers</div>
+    <div class="sc-value">21.4K</div>
+    <div class="sc-delta up">↑ +193 this week</div>
+    <div class="sc-platform">Instagram</div>
+  </div>
+  <div class="scorecard">
+    <div class="sc-label">TikTok Engagement</div>
+    <div class="sc-value">8.4%</div>
+    <div class="sc-delta up">↑ +0.6pp vs last wk</div>
+    <div class="sc-platform">TikTok</div>
+  </div>
+  <div class="scorecard">
+    <div class="sc-label">IG Engagement</div>
+    <div class="sc-value">5.1%</div>
+    <div class="sc-delta neutral">→ stable</div>
+    <div class="sc-platform">Instagram</div>
+  </div>
+  <div class="scorecard green">
+    <div class="sc-label">TikTok Shop GMV</div>
+    <div class="sc-value">€2.8K</div>
+    <div class="sc-delta up">↑ +14% vs last wk</div>
+    <div class="sc-platform">TikTok Shop</div>
+  </div>
+</div>
+
+<!-- Charts row 1 -->
+<div class="charts-row">
+
+  <!-- Follower growth chart -->
+  <div class="card">
+    <div class="card-title">Follower growth — TikTok & Instagram</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--ink)"></div>TikTok</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--ink-muted)"></div>Instagram</div>
+    </div>
+    <svg width="100%" height="140" viewBox="0 0 500 140" preserveAspectRatio="none">
+      <!-- Grid lines -->
+      <line x1="0" y1="20" x2="500" y2="20" stroke="#E4E0D8" stroke-width="1"/>
+      <line x1="0" y1="60" x2="500" y2="60" stroke="#E4E0D8" stroke-width="1"/>
+      <line x1="0" y1="100" x2="500" y2="100" stroke="#E4E0D8" stroke-width="1"/>
+      <!-- Y labels -->
+      <text x="0" y="18" font-size="9" fill="#B8B4AE" font-family="DM Mono">40K</text>
+      <text x="0" y="58" font-size="9" fill="#B8B4AE" font-family="DM Mono">30K</text>
+      <text x="0" y="98" font-size="9" fill="#B8B4AE" font-family="DM Mono">20K</text>
+      <!-- TikTok line -->
+      <polyline fill="none" stroke="#1A1814" stroke-width="1.8"
+        points="30,128 75,124 120,120 165,116 210,112 255,107 300,101 345,95 390,85 435,72 480,55"/>
+      <!-- Instagram line -->
+      <polyline fill="none" stroke="#B8B4AE" stroke-width="1.8"
+        points="30,132 75,130 120,127 165,124 210,121 255,118 300,114 345,110 390,104 435,96 480,87"/>
+      <!-- End dots -->
+      <circle cx="480" cy="55" r="3.5" fill="#1A1814"/>
+      <circle cx="480" cy="87" r="3.5" fill="#B8B4AE"/>
+      <!-- Labels -->
+      <text x="486" y="58" font-size="9" fill="#1A1814" font-family="DM Mono">36.7K</text>
+      <text x="486" y="90" font-size="9" fill="#B8B4AE" font-family="DM Mono">21.4K</text>
+    </svg>
+    <div style="display:flex;justify-content:space-between;margin-top:8px">
+      <span style="font-size:9px;color:var(--ink-muted)">Apr 2025</span>
+      <span style="font-size:9px;color:var(--ink-muted)">May 2026</span>
+    </div>
+  </div>
+
+  <!-- Engagement rate -->
+  <div class="card">
+    <div class="card-title">Engagement rate trend — TikTok</div>
+    <svg width="100%" height="160" viewBox="0 0 220 160" preserveAspectRatio="none">
+      <line x1="0" y1="30" x2="220" y2="30" stroke="#E4E0D8" stroke-width="1"/>
+      <line x1="0" y1="80" x2="220" y2="80" stroke="#E4E0D8" stroke-width="1"/>
+      <line x1="0" y1="130" x2="220" y2="130" stroke="#E4E0D8" stroke-width="1"/>
+      <text x="0" y="28" font-size="9" fill="#B8B4AE" font-family="DM Mono">12%</text>
+      <text x="0" y="78" font-size="9" fill="#B8B4AE" font-family="DM Mono">8%</text>
+      <text x="0" y="128" font-size="9" fill="#B8B4AE" font-family="DM Mono">4%</text>
+      <!-- Bars -->
+      <rect x="20"  y="100" width="12" height="30"  fill="#E4E0D8" rx="1"/>
+      <rect x="38"  y="95"  width="12" height="35"  fill="#E4E0D8" rx="1"/>
+      <rect x="56"  y="90"  width="12" height="40"  fill="#D0CBC2" rx="1"/>
+      <rect x="74"  y="88"  width="12" height="42"  fill="#D0CBC2" rx="1"/>
+      <rect x="92"  y="85"  width="12" height="45"  fill="#B8B4AE" rx="1"/>
+      <rect x="110" y="40"  width="12" height="90"  fill="#C0603A" rx="1"/><!-- viral -->
+      <rect x="128" y="82"  width="12" height="48"  fill="#B8B4AE" rx="1"/>
+      <rect x="146" y="78"  width="12" height="52"  fill="#8A8680" rx="1"/>
+      <rect x="164" y="72"  width="12" height="58"  fill="#8A8680" rx="1"/>
+      <rect x="182" y="70"  width="12" height="60"  fill="#1A1814" rx="1"/>
+      <!-- Annotation -->
+      <text x="108" y="36" font-size="8" fill="#C0603A" font-family="DM Sans" font-weight="600">viral</text>
+    </svg>
+  </div>
+
+</div>
+
+<!-- Charts row 2 -->
+<div class="charts-row-3">
+
+  <!-- TikTok views -->
+  <div class="card">
+    <div class="card-title">Weekly TikTok views</div>
+    <svg width="100%" height="120" viewBox="0 0 200 120" preserveAspectRatio="none">
+      <line x1="0" y1="20" x2="200" y2="20" stroke="#E4E0D8" stroke-width="1"/>
+      <line x1="0" y1="60" x2="200" y2="60" stroke="#E4E0D8" stroke-width="1"/>
+      <line x1="0" y1="100" x2="200" y2="100" stroke="#E4E0D8" stroke-width="1"/>
+      <polyline fill="none" stroke="#1A1814" stroke-width="1.6"
+        points="10,95 30,92 50,89 70,86 90,83 110,30 130,80 150,74 170,66 190,58"/>
+      <circle cx="110" cy="30" r="3" fill="#C0603A"/>
+      <text x="115" y="28" font-size="8" fill="#C0603A" font-family="DM Mono">136K</text>
+      <text x="0" y="18" font-size="8" fill="#B8B4AE" font-family="DM Mono">150K</text>
+      <text x="0" y="98" font-size="8" fill="#B8B4AE" font-family="DM Mono">10K</text>
+    </svg>
+    <div style="font-size:10px;color:var(--ink-muted);margin-top:8px">Oct 2025 outlier: Tutorial format</div>
+  </div>
+
+  <!-- Saves & Shares -->
+  <div class="card">
+    <div class="card-title">Saves & shares — TikTok</div>
+    <div class="legend" style="margin-bottom:10px">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--ink)"></div>Saves</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--ink-muted)"></div>Shares</div>
+    </div>
+    <svg width="100%" height="100" viewBox="0 0 200 100" preserveAspectRatio="none">
+      <line x1="0" y1="20" x2="200" y2="20" stroke="#E4E0D8" stroke-width="1"/>
+      <line x1="0" y1="60" x2="200" y2="60" stroke="#E4E0D8" stroke-width="1"/>
+      <polyline fill="none" stroke="#1A1814" stroke-width="1.5"
+        points="10,80 30,78 50,74 70,72 90,69 110,25 130,66 150,60 170,55 190,50"/>
+      <polyline fill="none" stroke="#B8B4AE" stroke-width="1.5"
+        points="10,85 30,83 50,80 70,78 90,75 110,35 130,72 150,68 170,63 190,58"/>
+    </svg>
+  </div>
+
+  <!-- Shop GMV -->
+  <div class="card">
+    <div class="card-title">TikTok Shop GMV (weekly)</div>
+    <svg width="100%" height="120" viewBox="0 0 200 120" preserveAspectRatio="none">
+      <line x1="0" y1="20" x2="200" y2="20" stroke="#E4E0D8" stroke-width="1"/>
+      <line x1="0" y1="60" x2="200" y2="60" stroke="#E4E0D8" stroke-width="1"/>
+      <line x1="0" y1="100" x2="200" y2="100" stroke="#E4E0D8" stroke-width="1"/>
+      <!-- Bars growing over time -->
+      <rect x="8"   y="105" width="10" height="5"  fill="#E4E0D8" rx="1"/>
+      <rect x="24"  y="103" width="10" height="7"  fill="#E4E0D8" rx="1"/>
+      <rect x="40"  y="98"  width="10" height="12" fill="#D0CBC2" rx="1"/>
+      <rect x="56"  y="93"  width="10" height="17" fill="#D0CBC2" rx="1"/>
+      <rect x="72"  y="87"  width="10" height="23" fill="#B8B4AE" rx="1"/>
+      <rect x="88"  y="80"  width="10" height="30" fill="#B8B4AE" rx="1"/>
+      <rect x="104" y="72"  width="10" height="38" fill="#8A8680" rx="1"/>
+      <rect x="120" y="63"  width="10" height="47" fill="#8A8680" rx="1"/>
+      <rect x="136" y="52"  width="10" height="58" fill="#3D6B52" rx="1"/>
+      <rect x="152" y="40"  width="10" height="70" fill="#3D6B52" rx="1"/>
+      <rect x="168" y="28"  width="10" height="82" fill="#3D6B52" rx="1"/>
+      <rect x="184" y="18"  width="10" height="92" fill="#3D6B52" rx="1"/>
+      <text x="0" y="18" font-size="8" fill="#B8B4AE" font-family="DM Mono">€3K</text>
+      <text x="0" y="98" font-size="8" fill="#B8B4AE" font-family="DM Mono">€0</text>
+    </svg>
+    <div style="font-size:10px;color:var(--green);margin-top:8px;font-weight:500">↑ 3× growth since launch</div>
+  </div>
+
+</div>
+```
+
+  </div>
+
+  <div class="footer">
+    <div class="footer-note">Data source: Google Sheets → Looker Studio  •  Refreshed weekly</div>
+    <div class="footer-note">Built by Evgeniya Orlova  •  2025–2026</div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     YOUTUBE DASHBOARD
+══════════════════════════════════════════════════════════════ -->
+
+<div id="youtube-dash">
+
+  <div class="switcher">
+    <button class="switch-btn active">Viral Spike</button>
+    <button class="switch-btn">Audience Geography</button>
+    <button class="switch-btn">Traffic Sources</button>
+    <button class="switch-btn">Retention & Engagement</button>
+    <div class="switch-divider">|</div>
+    <span style="font-size:11px;color:var(--ink-muted)">Oct 2025 – May 2026</span>
+  </div>
+
+  <div class="main">
+
+```
+<div class="page-header">
+  <div>
+    <div class="page-title">Viral Spike Analysis</div>
+    <div class="page-subtitle">Published 5 Oct 2025  •  Belarusian activist detention story</div>
+  </div>
+  <div class="insight-pill" style="border-left-color:#2C3E6B;background:#EEF1F8;color:#2C3E6B">
+    <div class="insight-label" style="color:#2C3E6B">Key insight</div>
+    Russian-speaking audiences watch 40% longer — more emotionally invested in the story
+  </div>
+</div>
+
+<!-- Scorecards -->
+<div class="section-label">Video performance overview</div>
+<div class="scorecard-row">
+  <div class="scorecard" style="--accent:#2C3E6B">
+    <div class="sc-label">Total Views</div>
+    <div class="sc-value">436K</div>
+    <div class="sc-delta up" style="color:#2C3E6B">Oct 2025 – May 2026</div>
+  </div>
+  <div class="scorecard accent" style="">
+    <div class="sc-label">First 7 Days</div>
+    <div class="sc-value">336K</div>
+    <div class="sc-delta up">77% of total views</div>
+  </div>
+  <div class="scorecard">
+    <div class="sc-label">Peak Day</div>
+    <div class="sc-value">89K</div>
+    <div class="sc-delta neutral">Day 3 — media peak</div>
+  </div>
+  <div class="scorecard">
+    <div class="sc-label">Avg Watch Time</div>
+    <div class="sc-value">4.2m</div>
+    <div class="sc-delta up">58% completion rate</div>
+  </div>
+  <div class="scorecard">
+    <div class="sc-label">Subscribers Gained</div>
+    <div class="sc-value">3.1K</div>
+    <div class="sc-delta up">from this video</div>
+  </div>
+</div>
+
+<div class="charts-row">
+
+  <!-- Viral spike area chart -->
+  <div class="card">
+    <div class="card-title">Daily views — viral spike & long tail</div>
+    <svg width="100%" height="160" viewBox="0 0 500 160" preserveAspectRatio="none">
+      <!-- Grid -->
+      <line x1="40" y1="20" x2="500" y2="20" stroke="#E4E0D8" stroke-width="1"/>
+      <line x1="40" y1="60" x2="500" y2="60" stroke="#E4E0D8" stroke-width="1"/>
+      <line x1="40" y1="100" x2="500" y2="100" stroke="#E4E0D8" stroke-width="1"/>
+      <line x1="40" y1="140" x2="500" y2="140" stroke="#E4E0D8" stroke-width="1"/>
+      <!-- Y labels -->
+      <text x="0" y="23"  font-size="9" fill="#B8B4AE" font-family="DM Mono">90K</text>
+      <text x="0" y="63"  font-size="9" fill="#B8B4AE" font-family="DM Mono">60K</text>
+      <text x="0" y="103" font-size="9" fill="#B8B4AE" font-family="DM Mono">30K</text>
+      <text x="0" y="143" font-size="9" fill="#B8B4AE" font-family="DM Mono">0</text>
+      <!-- Area fill -->
+      <polygon fill="#F5EDE8" opacity="0.8"
+        points="40,140 55,120 70,50 85,60 100,85 115,105 130,118 145,124 165,128 200,131 250,133 300,134 350,135 400,136 450,137 500,138 500,140 40,140"/>
+      <!-- Line -->
+      <polyline fill="none" stroke="#C0603A" stroke-width="2"
+        points="40,140 55,120 70,50 85,60 100,85 115,105 130,118 145,124 165,128 200,131 250,133 300,134 350,135 400,136 450,137 500,138"/>
+      <!-- Peak annotation -->
+      <circle cx="70" cy="50" r="4" fill="#C0603A"/>
+      <line x1="70" y1="20" x2="70" y2="50" stroke="#C0603A" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="74" y="18" font-size="9" fill="#C0603A" font-family="DM Sans" font-weight="600">89K — media coverage peak</text>
+      <!-- X labels -->
+      <text x="40"  y="155" font-size="8" fill="#B8B4AE" font-family="DM Mono">Oct 5</text>
+      <text x="85"  y="155" font-size="8" fill="#B8B4AE" font-family="DM Mono">Oct 8</text>
+      <text x="150" y="155" font-size="8" fill="#B8B4AE" font-family="DM Mono">Oct 15</text>
+      <text x="300" y="155" font-size="8" fill="#B8B4AE" font-family="DM Mono">Dec</text>
+      <text x="460" y="155" font-size="8" fill="#B8B4AE" font-family="DM Mono">May 26</text>
+    </svg>
+  </div>
+
+  <!-- Country breakdown -->
+  <div class="card">
+    <div class="card-title">Top audience countries</div>
+    <div class="country-table">
+      <div class="country-row">
+        <div class="country-rank">1</div>
+        <div class="country-name">Russia</div>
+        <div class="country-tag">RU-speaking</div>
+        <div class="country-bar-wrap"><div class="country-bar"><div class="country-bar-fill" style="width:100%"></div></div></div>
+        <div class="country-views">131K</div>
+      </div>
+      <div class="country-row">
+        <div class="country-rank">2</div>
+        <div class="country-name">Belarus</div>
+        <div class="country-tag">RU-speaking</div>
+        <div class="country-bar-wrap"><div class="country-bar"><div class="country-bar-fill" style="width:70%"></div></div></div>
+        <div class="country-views">92K</div>
+      </div>
+      <div class="country-row">
+        <div class="country-rank">3</div>
+        <div class="country-name">Ukraine</div>
+        <div class="country-tag">RU-speaking</div>
+        <div class="country-bar-wrap"><div class="country-bar"><div class="country-bar-fill" style="width:32%"></div></div></div>
+        <div class="country-views">41K</div>
+      </div>
+      <div class="country-row">
+        <div class="country-rank">4</div>
+        <div class="country-name">Netherlands</div>
+        <div class="country-tag neutral">Media reach</div>
+        <div class="country-bar-wrap"><div class="country-bar"><div class="country-bar-fill" style="width:25%"></div></div></div>
+        <div class="country-views">33K</div>
+      </div>
+      <div class="country-row">
+        <div class="country-rank">5</div>
+        <div class="country-name">United States</div>
+        <div class="country-tag neutral">Diaspora</div>
+        <div class="country-bar-wrap"><div class="country-bar"><div class="country-bar-fill" style="width:19%"></div></div></div>
+        <div class="country-views">19K</div>
+      </div>
+      <div class="country-row">
+        <div class="country-rank">6</div>
+        <div class="country-name">Kazakhstan</div>
+        <div class="country-tag">RU-speaking</div>
+        <div class="country-bar-wrap"><div class="country-bar"><div class="country-bar-fill" style="width:14%"></div></div></div>
+        <div class="country-views">18K</div>
+      </div>
+      <div class="country-row">
+        <div class="country-rank">7</div>
+        <div class="country-name">Germany</div>
+        <div class="country-tag neutral">Media reach</div>
+        <div class="country-bar-wrap"><div class="country-bar"><div class="country-bar-fill" style="width:13%"></div></div></div>
+        <div class="country-views">17K</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Traffic sources -->
+<div class="charts-row-3">
+  <div class="card" style="grid-column: span 2">
+    <div class="card-title">Traffic sources — how viewers found the video</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="font-size:11px;color:var(--ink);width:220px;flex-shrink:0">External (media / news articles)</div>
+        <div style="flex:1;height:6px;background:var(--rule);border-radius:3px;overflow:hidden">
+          <div style="width:24%;height:100%;background:#C0603A;border-radius:3px"></div></div>
+        <div style="font-size:11px;font-family:'DM Mono';color:var(--ink);width:36px;text-align:right">24%</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="font-size:11px;color:var(--ink);width:220px;flex-shrink:0">Browse features (homepage)</div>
+        <div style="flex:1;height:6px;background:var(--rule);border-radius:3px;overflow:hidden">
+          <div style="width:22%;height:100%;background:#1A1814;border-radius:3px"></div></div>
+        <div style="font-size:11px;font-family:'DM Mono';color:var(--ink);width:36px;text-align:right">22%</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="font-size:11px;color:var(--ink);width:220px;flex-shrink:0">YouTube Search</div>
+        <div style="flex:1;height:6px;background:var(--rule);border-radius:3px;overflow:hidden">
+          <div style="width:19%;height:100%;background:#1A1814;border-radius:3px"></div></div>
+        <div style="font-size:11px;font-family:'DM Mono';color:var(--ink);width:36px;text-align:right">19%</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="font-size:11px;color:var(--ink);width:220px;flex-shrink:0">Suggested videos</div>
+        <div style="flex:1;height:6px;background:var(--rule);border-radius:3px;overflow:hidden">
+          <div style="width:14%;height:100%;background:#B8B4AE;border-radius:3px"></div></div>
+        <div style="font-size:11px;font-family:'DM Mono';color:var(--ink);width:36px;text-align:right">14%</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="font-size:11px;color:var(--ink);width:220px;flex-shrink:0">Social media (Twitter/X, Telegram)</div>
+        <div style="flex:1;height:6px;background:var(--rule);border-radius:3px;overflow:hidden">
+          <div style="width:7%;height:100%;background:#B8B4AE;border-radius:3px"></div></div>
+        <div style="font-size:11px;font-family:'DM Mono';color:var(--ink);width:36px;text-align:right">7%</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="font-size:11px;color:var(--ink-soft);width:220px;flex-shrink:0">Other</div>
+        <div style="flex:1;height:6px;background:var(--rule);border-radius:3px;overflow:hidden">
+          <div style="width:14%;height:100%;background:#E4E0D8;border-radius:3px"></div></div>
+        <div style="font-size:11px;font-family:'DM Mono';color:var(--ink-soft);width:36px;text-align:right">14%</div>
+      </div>
+    </div>
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--rule);font-size:10.5px;color:var(--accent);font-weight:500">
+      External media = 24% — 2–3× above YouTube average. Media coverage and algorithm worked simultaneously.
+    </div>
+  </div>
+
+  <!-- Device split -->
+  <div class="card">
+    <div class="card-title">Device breakdown</div>
+    <div style="display:flex;flex-direction:column;gap:14px;margin-top:12px">
+      <div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <span style="font-size:11px;color:var(--ink)">Mobile</span>
+          <span style="font-size:11px;font-family:'DM Mono';color:var(--ink);font-weight:600">76%</span>
+        </div>
+        <div style="height:6px;background:var(--rule);border-radius:3px;overflow:hidden">
+          <div style="width:76%;height:100%;background:#1A1814;border-radius:3px"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <span style="font-size:11px;color:var(--ink)">Desktop</span>
+          <span style="font-size:11px;font-family:'DM Mono';color:var(--ink)">17%</span>
+        </div>
+        <div style="height:6px;background:var(--rule);border-radius:3px;overflow:hidden">
+          <div style="width:17%;height:100%;background:#B8B4AE;border-radius:3px"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <span style="font-size:11px;color:var(--ink-soft)">Tablet</span>
+          <span style="font-size:11px;font-family:'DM Mono';color:var(--ink-soft)">7%</span>
+        </div>
+        <div style="height:6px;background:var(--rule);border-radius:3px;overflow:hidden">
+          <div style="width:7%;height:100%;background:#E4E0D8;border-radius:3px"></div></div>
+      </div>
+    </div>
+    <div style="margin-top:20px;padding:10px;background:var(--bg);border-radius:4px">
+      <div style="font-size:10px;color:var(--ink-soft);line-height:1.5">Belarus and Russia skew even higher mobile — important for subtitle and caption strategy</div>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <div class="footer">
+    <div class="footer-note">Source: YouTube Analytics → Google Sheets → Looker Studio</div>
+    <div class="footer-note">Built by Evgeniya Orlova  •  October 2025</div>
+  </div>
+
+</div>
+
+<script>
+  function showDash(type) {
+    document.getElementById('creator-dash').classList.remove('visible');
+    document.getElementById('youtube-dash').classList.remove('visible');
+    document.getElementById(`${type}-dash`).classList.add('visible');
+    document.getElementById('tab-creator').classList.remove('active');
+    document.getElementById('tab-youtube').classList.remove('active');
+    document.getElementById(`tab-${type}`).classList.add('active');
+  }
+</script>
+
+</body>
+</html>
